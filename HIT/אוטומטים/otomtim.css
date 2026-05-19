@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>אוטומטים ושפות פורמליות — סיכום</title>
+
+  <style>
+    :root{
+      --bg: #ffffff;
+      --card: #ffffff;
+      --ink: #0f172a;
+      --muted: #475569;
+      --line: #e2e8f0;
+      --accent: #2563eb;
+
+      --ok-bg: #ecfdf5;  --ok-br: #86efac;
+      --warn-bg: #fffbeb; --warn-br: #fcd34d;
+      --bad-bg: #fef2f2;  --bad-br: #fca5a5;
+      --tip-bg: #eff6ff;  --tip-br: #93c5fd;
+
+      --code-bg: #f1f5f9;
+      --code-br: #e2e8f0;
+
+      --shadow: 0 10px 30px rgba(2,6,23,.08);
+      --radius: 16px;
+
+      --blue-a:#2563eb;   --blue-b:#60a5fa;  --blue-soft:#eff6ff;
+      --green-a:#16a34a;  --green-b:#86efac; --green-soft:#ecfdf5;
+      --amber-a:#d97706;  --amber-b:#fbbf24; --amber-soft:#fffbeb;
+      --red-a:#dc2626;    --red-b:#fca5a5;   --red-soft:#fef2f2;
+      --violet-a:#7c3aed; --violet-b:#c4b5fd;--violet-soft:#f5f3ff;
+    }
+
+    *{ box-sizing: border-box; }
+
+    body{
+      margin:0;
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Arial, "Noto Sans Hebrew", sans-serif;
+      line-height: 1.75;
+      background:
+        radial-gradient(1200px 600px at 85% -10%, #eef2ff 0%, transparent 60%),
+        radial-gradient(900px 500px at -10% 20%, #ecfeff 0%, transparent 55%),
+        var(--bg);
+    }
+
+    .wrap{
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 28px 16px 80px;
+    }
+
+    header.hero{
+      position: relative;
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 10px);
+      box-shadow: var(--shadow);
+      padding: 22px 20px;
+      margin-bottom: 16px;
+      overflow:hidden;
+    }
+    header.hero:before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: linear-gradient(120deg, rgba(37,99,235,.18), rgba(124,58,237,.14), rgba(22,163,74,.12));
+      filter: blur(18px);
+      opacity: .9;
+      pointer-events:none;
+    }
+    header.hero > *{ position: relative; z-index: 1; }
+
+    .hero h1{
+      margin: 0 0 6px;
+      font-size: 30px;
+      letter-spacing: .2px;
+    }
+    .hero .sub{
+      margin:0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid{
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    /* section themes */
+    .theme-blue{ --t-a: var(--blue-a); --t-b: var(--blue-b); --t-soft: var(--blue-soft); }
+    .theme-green{ --t-a: var(--green-a); --t-b: var(--green-b); --t-soft: var(--green-soft); }
+    .theme-amber{ --t-a: var(--amber-a); --t-b: var(--amber-b); --t-soft: var(--amber-soft); }
+    .theme-red{ --t-a: var(--red-a); --t-b: var(--red-b); --t-soft: var(--red-soft); }
+    .theme-violet{ --t-a: var(--violet-a); --t-b: var(--violet-b); --t-soft: var(--violet-soft); }
+
+    section.card{
+      position: relative;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow);
+      padding: 18px 18px 16px;
+      overflow:hidden;
+    }
+    section.card:before{
+      content:"";
+      position:absolute;
+      top: 14px; bottom: 14px;
+      right: 10px;
+      width: 7px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--t-a, var(--accent)), var(--t-b, #60a5fa));
+    }
+    section.card:after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background: linear-gradient(180deg, var(--t-soft, #eff6ff), #ffffff 55%);
+      opacity: .55;
+      pointer-events:none;
+    }
+    section.card > *{ position: relative; z-index: 1; }
+
+    h2{
+      margin: 4px 0 10px;
+      font-size: 22px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .h2row{
+      display:flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .badge{
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      background: #ffffff;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      white-space: nowrap;
+    }
+    .h2line{
+      height: 3px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--t-a, var(--accent)), var(--t-b, #60a5fa));
+      margin-top: 10px;
+      opacity: .95;
+    }
+
+    h3{
+      margin: 16px 0 8px;
+      font-size: 18px;
+    }
+    h4{
+      margin: 14px 0 6px;
+      font-size: 16px;
+      color: var(--ink);
+    }
+
+    p{ margin: 8px 0; }
+    .muted{ color: var(--muted); }
+
+    hr.sep{
+      border: none;
+      border-top: 1px dashed #cbd5e1;
+      margin: 16px 0;
+    }
+
+    ul{ margin: 8px 0 8px; padding-right: 18px; }
+    li{ margin: 6px 0; }
+
+    /* remove numbering for ordered lists */
+    ol{
+      list-style: none;
+      padding-right: 18px;
+      margin: 8px 0;
+    }
+    ol li{
+      position: relative;
+      padding-right: 16px;
+      margin: 6px 0;
+    }
+    ol li:before{
+      content:"•";
+      position:absolute;
+      right:0;
+      font-weight: 900;
+      color: var(--t-a, var(--accent));
+    }
+
+    /* FIX: Inline math/code chips alignment */
+    code, .ltr{
+      direction: ltr;
+      unicode-bidi: isolate;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      background: var(--code-bg);
+      border: 1px solid var(--code-br);
+      padding: 1px 7px;
+      border-radius: 10px;
+      display: inline;
+      vertical-align: baseline;
+      line-height: 1.2;
+      position: static;
+      white-space: nowrap;
+      font-size: .95em;
+      font-variant-ligatures: none;
+    }
+
+    .callout{
+      display: grid;
+      grid-template-columns: 40px 1fr;
+      gap: 10px;
+      align-items: start;
+      border-radius: 14px;
+      padding: 12px 12px 10px;
+      border: 1px solid var(--line);
+      margin: 10px 0;
+    }
+    .callout .icon{
+      width: 34px; height: 34px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+    }
+    .callout .title{
+      font-weight: 900;
+      margin: 0 0 2px;
+    }
+    .callout.ok{ background: var(--ok-bg); border-color: var(--ok-br); }
+    .callout.warn{ background: var(--warn-bg); border-color: var(--warn-br); }
+    .callout.bad{ background: var(--bad-bg); border-color: var(--bad-br); }
+    .callout.tip{ background: var(--tip-bg); border-color: var(--tip-br); }
+
+    .img-slot{
+      border: 1px dashed #cbd5e1;
+      background: #f8fafc;
+      border-radius: 14px;
+      height: 160px;
+      margin: 10px 0;
+    }
+
+    /* Exam summary block inside each section */
+    .exam{
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #ffffff;
+      box-shadow: 0 6px 18px rgba(2,6,23,.05);
+      overflow:hidden;
+      margin-top: 14px;
+    }
+    .exam .head{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      background: linear-gradient(90deg, var(--t-soft, #eff6ff), #ffffff);
+      border-bottom: 1px solid var(--line);
+    }
+    .exam .head .ttl{
+      font-weight: 1000;
+    }
+    .exam .head .tag{
+      font-size: 12px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background:#fff;
+      white-space: nowrap;
+    }
+    .exam .body{
+      padding: 10px 12px 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .exam .cols{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .exam ul{
+      margin: 0;
+      padding-right: 18px;
+    }
+    .exam li{ margin: 6px 0; }
+    .mini{
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: #fff;
+    }
+    .mini .t{
+      font-weight: 900;
+      margin: 0 0 4px;
+      display:flex;
+      gap: 8px;
+      align-items:center;
+    }
+    .mini .t .dot{
+      width: 10px; height: 10px;
+      border-radius: 999px;
+      background: var(--t-a, var(--accent));
+    }
+
+    @media (min-width: 860px){
+      .exam .cols{ grid-template-columns: 1fr 1fr; }
+    }
+
+    @media print{
+      :root{ --shadow: none; }
+      body{ background: #fff; }
+      .wrap{ max-width: 100%; padding: 0; }
+      header.hero, section.card{
+        box-shadow: none;
+        background: #fff;
+        border-color: #ddd;
+      }
+      h2{ border-bottom-color: #ddd; }
+      .callout{ border-color: #ccc; }
+      code, .ltr{
+        background: #f3f4f6;
+        border-color: #e5e7eb;
+      }
+      .img-slot{ border-color: #bbb; background:#fff; }
+      .exam{ box-shadow:none; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <h1>אוטומטים ושפות פורמליות — סיכום</h1>
+      <p class="sub">RTL לעברית + LTR לביטויים/נוסחאות</p>
+    </header>
+
+    <div class="grid">
+
+      <!-- INTRO -->
+      <section class="card theme-blue" id="intro">
+        <h2>
+          <div class="h2row">
+            <span>מבוא – אוטומטים ושפות פורמליות</span>
+            <span class="badge">Intro</span>
+          </div>
+          <div class="h2line"></div>
+        </h2>
+
+        <h3>מטרת הקורס</h3>
+        <p>
+          להבין <b>מה ניתן לזהות חישובית ומה לא</b>, באמצעות מודלים פורמליים של חישוב.
+          הקורס עוסק בהשוואה בין <b>כוח חישוב</b> של מודלים שונים, ומה הם מסוגלים (או לא מסוגלים) לזהות.
+        </p>
+
+        <hr class="sep" />
+
+        <h3>הרעיון המאחד של הקורס</h3>
+        <p>המעבר בין המודלים נובע מצורך ב<b>זיכרון חישובי חזק יותר</b>:</p>
+        <ul>
+          <li><b>זיכרון סופי בלבד</b> ⇒ שפות רגולריות ⇒ אוטומטים סופיים / ביטויים רגולריים</li>
+          <li><b>זיכרון לא־חסום (מחסנית אחת)</b> ⇒ שפות חסרות־הקשר ⇒ דקדוקים חסרי־הקשר / PDA</li>
+          <li><b>יותר מתלות אחת</b> ⇒ לא רגולריות ולא חסרות־הקשר ⇒ דורש מודלים חזקים יותר</li>
+        </ul>
+
+        <hr class="sep" />
+
+        <h3>הגדרות בסיס (פרקטי)</h3>
+        <p><b>אלפבית Σ</b> – קבוצה סופית של סמלים. דוגמה: <code>Σ = {a, b}</code></p>
+        <p><b>מילה w</b> – רצף סופי מעל Σ.</p>
+        <p><b>ε</b> – מילה ריקה. <code>|ε| = 0</code></p>
+        <p><b>Σ*</b> – כל המילים הסופיות מעל Σ (כולל ε)</p>
+        <p><b>שפה L</b> – תת־קבוצה של Σ* (כלומר <code>L ⊆ Σ*</code>)</p>
+
+        <h4>פעולות בסיסיות על שפות</h4>
+        <ul>
+          <li><b>איחוד</b>: <code>L₁ ∪ L₂</code></li>
+          <li><b>חיתוך</b>: <code>L₁ ∩ L₂</code></li>
+          <li><b>משלים</b>: <code>Ḻ = Σ* \ L</code></li>
+          <li><b>שרשור</b>: <code>L₁L₂ = { wv | w ∈ L₁, v ∈ L₂ }</code></li>
+          <li><b>כוכבית</b>: <code>L* = ⋃ᵢ≥0 Lⁱ</code> (תמיד כולל ε)</li>
+          <li><b>פלוס</b>: <code>L⁺ = ⋃ᵢ≥1 Lⁱ</code></li>
+        </ul>
+
+        <h4>סימונים שימושיים</h4>
+        <ul>
+          <li><code>|w|</code> – אורך</li>
+          <li><code>#a(w)</code> – כמה פעמים <code>a</code> מופיע ב-<code>w</code></li>
+          <li><code>wᴿ</code> – היפוך מילה</li>
+        </ul>
+
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">דגש קטן</div>
+            <p class="muted" style="margin:0">
+              אם כתוב “כל המילים” / “כל האפשרויות” — זה בדרך כלל <code>Σ*</code> או תת־שפה של <code>Σ*</code>.
+            </p>
+          </div>
+        </div>
+
+        <div class="exam">
+          <div class="head">
+            <div class="ttl">סיכום למבחן — מבוא</div>
+            <div class="tag">מה לשים לב</div>
+          </div>
+          <div class="body">
+            <div class="cols">
+              <div class="mini">
+                <div class="t"><span class="dot"></span>נקודות חובה</div>
+                <ul>
+                  <li>להבין את “כוח החישוב” כעניין של זיכרון: <b>סופי</b> מול <b>מחסנית</b> מול “יותר מתלות אחת”.</li>
+                  <li>לזכור שהגדרות הן בסיס לכל השאר: <code>Σ</code>, <code>Σ*</code>, <code>ε</code>, <code>L ⊆ Σ*</code>.</li>
+                  <li>לדעת פעולות שפות: איחוד/חיתוך/משלים/שרשור/<code>*</code>/<code>+</code> ולהסביר מה יוצא.</li>
+                </ul>
+              </div>
+              <div class="mini">
+                <div class="t"><span class="dot"></span>טריקים</div>
+                <ul>
+                  <li>אם שאלה כתובה “כל המילים מעל Σ” — כמעט תמיד זה <code>Σ*</code>.</li>
+                  <li>אם מציגים שפה עם תנאי — קודם תבדוק האם זה תנאי מקומי/מודולו/תלות כמותית (זה מכוון למחלקה).</li>
+                  <li>על שרשור: <code>L₁L₂</code> זה “מילה מ-<code>L₁</code> ואז מילה מ-<code>L₂</code>” — לא ערבוב.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CLASSIFICATION -->
+      <section class="card theme-violet" id="classification">
+        <h2>
+          <div class="h2row">
+            <span>סיווג שפות</span>
+            <span class="badge">Classification</span>
+          </div>
+          <div class="h2line"></div>
+        </h2>
+
+        <h3>היררכיית השפות</h3>
+        <div class="img-slot"></div>
+
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">אינטואיציה מרכזית</div>
+            <p class="muted" style="margin:0">
+              ככל שהמודל החישובי <b>חזק יותר</b> → אפשר לזהות שפות “מסובכות” יותר,
+              אבל היכולת להסיק דברים אוטומטית בעזרת <b>סגירויות</b> נהיית <b>חלשה יותר</b>.
+            </p>
+          </div>
+        </div>
+
+        <hr class="sep" />
+
+        <h3>טריקים לזיהוי מהיר לפי “צורת השפה”</h3>
+
+        <div class="callout ok">
+          <div class="icon">✅</div>
+          <div>
+            <div class="title">כמעט תמיד רגולרית</div>
+            <ul>
+              <li>תנאי מקומי/דפוס קבוע: “מסתיים ב־01”, “מכיל 010”</li>
+              <li>תנאי מודולו: <code>|w| mod 3 = 0</code>, “מספר אפסים זוגי”</li>
+              <li>“בלוקים” בלי תלות בכמויות: <code>a*b*</code> (או צורות דומות)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout warn">
+          <div class="icon">⚠️</div>
+          <div>
+            <div class="title">כמעט תמיד לא רגולרית</div>
+            <ul>
+              <li>תלות כמותית/השוואה: <code>aⁿbⁿ</code>, <code>#a(w)=#b(w)</code>, <code>ww</code>, פלינדרום</li>
+              <li class="muted">אינטואיציה: צריך “לזכור כמה היה” כדי להשוות בהמשך → זיכרון סופי לא מספיק</li>
+            </ul>
+          </div>
+        </div>
+
+        <h4>חלוקה מהירה לפי “מספר התלויות”</h4>
+
+        <div class="callout ok">
+          <div class="icon">✅</div>
+          <div>
+            <div class="title">חסרת־הקשר אבל לא רגולרית (תלות אחת)</div>
+            <ul>
+              <li><code>aⁿbⁿ</code></li>
+              <li>סוגריים תקינים</li>
+              <li>פלינדרום (ברוב המקרים)</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="callout bad">
+          <div class="icon">❌</div>
+          <div>
+            <div class="title">לא חסרת־הקשר (שתי תלויות עצמאיות)</div>
+            <ul>
+              <li><code>aⁿbⁿcⁿ</code></li>
+              <li>גם <code>#a=#b</code> וגם <code>#b=#c</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <hr class="sep" />
+
+        <h3>סגירויות — כלי עבודה לשאלות “האם שייך למחלקה”</h3>
+
+        <h4>רגולריות — סגירויות חזקות</h4>
+        <div class="callout ok">
+          <div class="icon">✅</div>
+          <div>
+            <div class="title">שפות רגולריות סגורות תחת</div>
+            <p style="margin:0">
+              <code>∪</code>, <code>∩</code>, משלים, הפרש, שרשור, כוכבית, היפוך
+            </p>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">דגש</div>
+            <p class="muted" style="margin:0">
+              אם שפה נבנית <b>רק</b> מפעולות סגירות על שפות רגולריות → <b>התוצאה רגולרית</b>.
+            </p>
+          </div>
+        </div>
+
+        <h4>שפות חסרות־הקשר — סגירויות חלקיות</h4>
+
+        <div class="callout ok">
+          <div class="icon">✅</div>
+          <div>
+            <div class="title">שפות חסרות־הקשר סגורות תחת</div>
+            <p style="margin:0">איחוד, שרשור, כוכבית, היפוך</p>
+          </div>
+        </div>
+
+        <div class="callout bad">
+          <div class="icon">❌</div>
+          <div>
+            <div class="title">שפות חסרות־הקשר לא סגורות תחת</div>
+            <p style="margin:0">חיתוך, משלים</p>
+          </div>
+        </div>
+
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">טריק שחוזר</div>
+            <p class="muted" style="margin:0">
+              אם <code>L</code> חסרת־הקשר ו-<code>R</code> רגולרית → <code>L ∩ R</code> חסרת־הקשר.
+            </p>
+          </div>
+        </div>
+
+        <div class="callout warn">
+          <div class="icon">⚠️</div>
+          <div>
+            <div class="title">דגש קריטי</div>
+            <p class="muted" style="margin:0">
+              אם פעולה <b>לא</b> סגורה → לא ניתן להסיק שהתוצאה במחלקה. זה לא אומר שהתוצאה בהכרח מחוץ למחלקה.
+            </p>
+          </div>
+        </div>
+
+        <hr class="sep" />
+
+        <h3>הכלה לא שומרת סוג (מלכודת קלאסית)</h3>
+        <div class="callout warn">
+          <div class="icon">⚠️</div>
+          <div>
+            <div class="title">דוגמה</div>
+            <p style="margin:0">
+              <code>L = Σ*</code> רגולרית, אבל <code>L′ = { aⁿbⁿ } ⊆ Σ*</code> והיא <b>לא רגולרית</b>.
+              מסקנה: “תת־קבוצה של רגולרית” <b>לא אומר כלום</b> על סוג השפה.
+            </p>
+          </div>
+        </div>
+
+        <div class="exam">
+          <div class="head">
+            <div class="ttl">סיכום למבחן — סיווג שפות</div>
+            <div class="tag">איך לזהות מהר</div>
+          </div>
+          <div class="body">
+            <div class="cols">
+              <div class="mini">
+                <div class="t"><span class="dot"></span>נקודות חובה</div>
+                <ul>
+                  <li>רגולרית = בלי השוואה כמותית ארוכת טווח; חסרת־הקשר = “תלות אחת”; שתי תלויות = לרוב לא ח״ה.</li>
+                  <li>סגירויות רגולריות חזקות (כולל משלים/חיתוך); ח״ה חסרות משלים/חיתוך.</li>
+                  <li>“פעולה לא סגורה” ≠ “בהכרח לא שייך למחלקה” — אי אפשר להסיק כלום.</li>
+                  <li>תת־קבוצה של רגולרית לא מבטיחה רגולריות.</li>
+                </ul>
+              </div>
+              <div class="mini">
+                <div class="t"><span class="dot"></span>טריקים</div>
+                <ul>
+                  <li>כתוב <code>#a=#b</code> / <code>aⁿbⁿ</code> / פלינדרום / <code>ww</code> → מיד לחשוד “לא רגולרית”.</li>
+                  <li>אם רוצים להראות ח״ה: תנסה לחתוך עם רגולרית <code>R</code> כדי “לבודד” צורה כמו <code>aⁿbⁿ</code>.</li>
+                  <li>אם רוצים להראות לא ח״ה: הרבה פעמים מחפשים “שתי תלויות” כמו <code>aⁿbⁿcⁿ</code>.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FA -->
+      <section class="card theme-green" id="fa">
+        <h2>
+          <div class="h2row">
+            <span>אוטומטים סופיים (אס״ד / אסל״ד)</span>
+            <span class="badge">FA</span>
+          </div>
+          <div class="h2line"></div>
+        </h2>
+
+        <h3>אינטואיציה</h3>
+        <p>אוטומט סופי קורא מילה <b>תו־תו</b>. הזיכרון היחיד שלו הוא <b>המצב הנוכחי</b>.</p>
+        <ul>
+          <li>דפוסים קבועים</li>
+          <li>תנאי מודולו</li>
+          <li>זיהוי תבניות כמו “ראיתי כבר 01”</li>
+          <li>ספירה <b>מוגבלת מראש</b></li>
+        </ul>
+
+        <hr class="sep" />
+
+        <h3>שרטוט אוטומט</h3>
+        <ul>
+          <li><b>מצבים</b> — העיגולים</li>
+          <li><b>מצב התחלתי</b> <code>q₀</code> — חץ מבחוץ</li>
+          <li><b>מצבים מקבלים</b> <code>F</code> — עיגול כפול</li>
+          <li><b>מעבר</b> על תו <code>σ</code></li>
+          <li><b>trap</b> — מצב זבל (אם צריך להשלים DFA)</li>
+        </ul>
+
+        <div class="img-slot"></div>
+
+        <hr class="sep" />
+
+        <h3>אס״ד (DFA)</h3>
+        <p><b>דטרמיניסטי:</b> לכל מצב ולכל תו — <b>מעבר יחיד</b>.</p>
+        <p class="muted"><b>DFA מלא:</b> אם חסר מעבר — מוסיפים trap.</p>
+        <ul>
+          <li>אין מצבים מקבלים ⇒ <code>L(A) = ∅</code></li>
+          <li>כל המצבים מקבלים ⇒ <code>L(A) = Σ*</code></li>
+        </ul>
+
+        <hr class="sep" />
+
+        <h3>אסל״ד (NFA)</h3>
+        <ul>
+          <li>מותר יותר ממעבר אחד על אותו תו</li>
+          <li>מותרות מעברי <code>ε</code></li>
+          <li>קבלה אם <b>קיים לפחות מסלול אחד</b> שמוביל למצב מקבל</li>
+        </ul>
+
+        <div class="img-slot"></div>
+
+        <hr class="sep" />
+
+        <h3>המרה NFA→DFA</h3>
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">דגש</div>
+            <p class="muted" style="margin:0">
+              אם ל-NFA יש <code>|Q|</code> מצבים ⇒ DFA שקול יכול להכיל עד <code>2^|Q|</code> מצבים.
+            </p>
+          </div>
+        </div>
+        <ul>
+          <li>מצב התחלה: <code>ε-closure({q₀})</code></li>
+          <li>מצב מקבל: אם הקבוצה מכילה לפחות מצב מקבל אחד</li>
+        </ul>
+
+        <hr class="sep" />
+
+        <h3>Complement (רק ב-DFA)</h3>
+        <ol>
+          <li>להפוך את ה-DFA למלא (trap אם צריך)</li>
+          <li>להחליף: מקבל ↔ לא מקבל</li>
+        </ol>
+
+        <div class="exam">
+          <div class="head">
+            <div class="ttl">סיכום למבחן — אוטומטים סופיים</div>
+            <div class="tag">דברים שנופלים עליהם</div>
+          </div>
+          <div class="body">
+            <div class="cols">
+              <div class="mini">
+                <div class="t"><span class="dot"></span>נקודות חובה</div>
+                <ul>
+                  <li>ב-DFA: לכל מצב ולכל תו חייב להיות מעבר (אחרת “לא מלא” → מוסיפים <code>trap</code>).</li>
+                  <li>ב-NFA: קבלה אם <b>קיים</b> מסלול שמגיע למקבל; מותר <code>ε</code> ומספר מעברים על אותו תו.</li>
+                  <li>המרת NFA→DFA = קבוצות מצבים + <code>ε-closure</code>.</li>
+                  <li>Complement עושים רק על DFA מלא: מחליפים מקבלים/לא-מקבלים.</li>
+                </ul>
+              </div>
+              <div class="mini">
+                <div class="t"><span class="dot"></span>טריקים</div>
+                <ul>
+                  <li>שאלה “האם האוטומט מקבל Σ*?” → כל המצבים מקבלים (וגם אין תקיעות).</li>
+                  <li>שאלה “האם האוטומט מקבל ∅?” → אין מצבים מקבלים (או אין דרך להגיע אליהם).</li>
+                  <li>אם אוטומט “נתקע” על תו → זה סימן שמצפים ממך להוסיף <code>trap</code> (ב-DFA).</li>
+                  <li>בהמרת NFA→DFA: מצב מקבל חדש אם הקבוצה מכילה לפחות מצב מקבל אחד.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REGEX -->
+      <section class="card theme-amber" id="regex">
+        <h2>
+          <div class="h2row">
+            <span>ביטויים רגולריים</span>
+            <span class="badge">Regex</span>
+          </div>
+          <div class="h2line"></div>
+        </h2>
+
+        <h3>אינטואיציה</h3>
+        <p>ביטוי רגולרי מתאר <b>שפה רגולרית</b> בלי לצייר אוטומט.</p>
+
+        <h3>אבני בסיס</h3>
+        <ul>
+          <li><code>∅</code> — לא מייצר אף מילה</li>
+          <li><code>ε</code> — מייצר רק את המילה הריקה</li>
+          <li><code>σ ∈ Σ</code> — מייצר את התו <code>σ</code> בלבד</li>
+        </ul>
+
+        <h4>פעולות</h4>
+        <ul>
+          <li>איחוד: <code>r₁ + r₂</code></li>
+          <li>שרשור: <code>r₁r₂</code></li>
+          <li>כוכבית: <code>r*</code></li>
+        </ul>
+
+        <h3>קדימויות</h3>
+        <ol>
+          <li><b>*</b></li>
+          <li><b>שרשור</b></li>
+          <li><b>+</b></li>
+        </ol>
+
+        <div class="callout warn">
+          <div class="icon">⚠️</div>
+          <div>
+            <div class="title">מלכודות</div>
+            <ul>
+              <li><code>ab</code> זה שרשור, לא <code>(ab)*</code></li>
+              <li><code>(a+b)</code> שונה מ-<code>a + b*</code></li>
+            </ul>
+          </div>
+        </div>
+
+        <h3>תבניות נפוצות</h3>
+        <ul>
+          <li>מסתיים ב־01 → <code>(0+1)*01</code></li>
+          <li>מכיל 010 → <code>(0+1)*010(0+1)*</code></li>
+          <li>מספר ה־1 זוגי → <code>0*(10*10*)*</code></li>
+        </ul>
+
+        <div class="exam">
+          <div class="head">
+            <div class="ttl">סיכום למבחן — Regex</div>
+            <div class="tag">איך לא לטעות</div>
+          </div>
+          <div class="body">
+            <div class="cols">
+              <div class="mini">
+                <div class="t"><span class="dot"></span>נקודות חובה</div>
+                <ul>
+                  <li>להבדיל בין <b>איחוד</b> (<code>+</code>) לבין <b>שרשור</b> (הצמדה).</li>
+                  <li><code>r*</code> תמיד כולל <code>ε</code>. <code>r+</code> לא כולל <code>ε</code> אלא אם <code>ε ∈ L(r)</code>.</li>
+                  <li>קדימות: קודם <code>*</code>, אחר כך שרשור, אחר כך <code>+</code>.</li>
+                </ul>
+              </div>
+              <div class="mini">
+                <div class="t"><span class="dot"></span>טריקים</div>
+                <ul>
+                  <li>“מכיל X” → כמעט תמיד <code>(Σ)* X (Σ)*</code> (למשל בינארי: <code>(0+1)*X(0+1)*</code>).</li>
+                  <li>“מסתיים ב-X” → <code>(Σ)*X</code>. “מתחיל ב-X” → <code>X(Σ)*</code>.</li>
+                  <li>זוגיות/מודולו ב־Regex: בונים “בלוק” שחוזר, כמו “שני 1-ים” → <code>(10*10*)*</code> עם אפסים חופשיים.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PUMPING -->
+      <section class="card theme-red" id="pumping">
+        <h2>
+          <div class="h2row">
+            <span>למת הניפוח</span>
+            <span class="badge">Pumping</span>
+          </div>
+          <div class="h2line"></div>
+        </h2>
+
+        <h3>מטרה</h3>
+        <p>כלי להוכיח ששפה <b>אינה רגולרית</b>.</p>
+
+        <h3>תנאים</h3>
+        <p class="muted">
+          אם L רגולרית, קיים <code>n</code> כך שלכל <code>z ∈ L</code> עם <code>|z| ≥ n</code> קיימת חלוקה <code>z = uvw</code> כך ש:
+        </p>
+        <ul>
+          <li><code>|uv| ≤ n</code></li>
+          <li><code>|v| ≥ 1</code></li>
+          <li>לכל <code>i ≥ 0</code>: <code>uvⁱw ∈ L</code></li>
+        </ul>
+
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">דגש ענק</div>
+            <p class="muted" style="margin:0">
+              חייבים להראות כישלון עבור <b>כל</b> חלוקה אפשרית שמקיימת את התנאים.
+            </p>
+          </div>
+        </div>
+
+        <h3>מתכון כתיבה</h3>
+        <ol>
+          <li>נניח בשלילה ש-L רגולרית ויהי <code>n</code>.</li>
+          <li>נבחר <code>z ∈ L</code> עם <code>|z| ≥ n</code>.</li>
+          <li>ניקח חלוקה כללית <code>z=uvw</code> עם התנאים.</li>
+          <li>נבחר <code>i</code> (לרוב 0 או 2).</li>
+          <li>נראה ש-<code>uvⁱw ∉ L</code> ⇒ סתירה.</li>
+        </ol>
+
+        <h3>דוגמה: <span class="ltr">L = { aⁿbⁿ }</span></h3>
+        <ul>
+          <li>בחירה: <code>z = aⁿbⁿ</code></li>
+          <li>מ-<code>|uv|≤n</code> ⇒ <code>v = aᵏ</code>, <code>k≥1</code></li>
+          <li>ניפוח <code>i=0</code> ⇒ <code>uw = aⁿ⁻ᵏ bⁿ</code> ⇒ לא בשפה</li>
+        </ul>
+
+        <div class="exam">
+          <div class="head">
+            <div class="ttl">סיכום למבחן — Pumping Lemma</div>
+            <div class="tag">שיטה קבועה</div>
+          </div>
+          <div class="body">
+            <div class="cols">
+              <div class="mini">
+                <div class="t"><span class="dot"></span>נקודות חובה</div>
+                <ul>
+                  <li>את <code>n</code> נותנים לך “מהשמיים” (קיים) — אתה <b>לא</b> בוחר אותו.</li>
+                  <li>את <code>z</code> אתה בוחר (חייב להיות באורך ≥ <code>n</code>).</li>
+                  <li>החלוקה <code>uvw</code> היא <b>כללית</b> (האויב בוחר), תחת <code>|uv|≤n</code>, <code>|v|≥1</code>.</li>
+                  <li>צריך להראות שיש <code>i</code> שמוציא מהשפה ⇒ סתירה.</li>
+                </ul>
+              </div>
+              <div class="mini">
+                <div class="t"><span class="dot"></span>טריקים</div>
+                <ul>
+                  <li>בחר <code>z</code> כך שיכפה על <code>v</code> להיות בתוך “בלוק” אחד (למשל רק <code>a</code>-ים בהתחלה).</li>
+                  <li>ב־<code>aⁿbⁿ</code> כמעט תמיד “משאיבה” את ה־<code>a</code>-ים: בוחרים <code>i=0</code> או <code>i=2</code>.</li>
+                  <li>אם <code>v</code> יכול לכלול שני סוגי תווים — לפעמים צריך Case Split קצר (עדיין תחת “כל חלוקה”).</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MYHILL-NERODE -->
+      <section class="card theme-violet" id="myhill">
+        <h2>
+          <div class="h2row">
+            <span>מיהיל–נרודה, Rank וקבוצה מפרידה</span>
+            <span class="badge">Myhill–Nerode</span>
+          </div>
+          <div class="h2line"></div>
+        </h2>
+
+        <h3>יחס שקילות</h3>
+        <p><code>x ≡ₗ y</code> אם לכל <code>z</code>: <code>xz ∈ L ⇔ yz ∈ L</code></p>
+
+        <h3>מפריד</h3>
+        <p class="muted">
+          מספיק למצוא <code>z</code> כך ש-<code>xz ∈ L</code> ו-<code>yz ∉ L</code> (או להפך).
+        </p>
+
+        <h3>Rank</h3>
+        <ul>
+          <li><code>Rank(L)</code> סופי ⇔ L רגולרית</li>
+          <li><code>Rank(L)</code> = מספר המצבים ב-DFA המינימלי</li>
+          <li><code>Rank(L) = Rank(Ḻ)</code></li>
+        </ul>
+
+        <h3>אי־רגולריות בעזרת נרודה</h3>
+        <ol>
+          <li>בונים אינסוף מילים <code>x₀, x₁, x₂, …</code></li>
+          <li>לכל <code>i≠j</code> מוצאים <code>z</code> שמפריד</li>
+          <li>⇒ אינסוף מחלקות ⇒ לא רגולרית</li>
+        </ol>
+
+        <div class="exam">
+          <div class="head">
+            <div class="ttl">סיכום למבחן — Myhill–Nerode</div>
+            <div class="tag">תבנית הוכחה</div>
+          </div>
+          <div class="body">
+            <div class="cols">
+              <div class="mini">
+                <div class="t"><span class="dot"></span>נקודות חובה</div>
+                <ul>
+                  <li><code>x ≡ₗ y</code> מוגדר לפי “כל המשכים <code>z</code>”.</li>
+                  <li>מפריד = המשך אחד שמבדיל בין שייכות ל-<code>L</code>.</li>
+                  <li><code>Rank(L)</code> הוא בדיוק #מצבים ב-DFA מינימלי.</li>
+                </ul>
+              </div>
+              <div class="mini">
+                <div class="t"><span class="dot"></span>טריקים</div>
+                <ul>
+                  <li>כדי להראות לא רגולרית: בחר <code>xᵢ</code> “שמקודדות מצב” (לרוב כמו <code>aⁱ</code>) ואז בחר <code>z</code> שתלוי בהפרש.</li>
+                  <li>נוח לבחור <code>z</code> ש”משלים” בדיוק עד תנאי (למשל “צריך עוד כך וכך”).</li>
+                  <li>אם ביקשו מינימיזציה: לחשוב על מחלקות שקילות כמצבים — זה חוסך בלבול.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PDA -->
+      <section class="card theme-green" id="pda">
+        <h2>
+          <div class="h2row">
+            <span>אוטומט מחסנית (PDA)</span>
+            <span class="badge">PDA</span>
+          </div>
+          <div class="h2line"></div>
+        </h2>
+
+        <h3>אינטואיציה</h3>
+        <p class="muted">מחסנית מאפשרת לזכור כמות אחת ולהשוות בהמשך הקלט.</p>
+
+        <h3>מעבר</h3>
+        <p><code>(σ, X → γ)</code></p>
+        <ul>
+          <li><code>σ</code> — מה קוראים מהקלט (יכול להיות <code>ε</code>)</li>
+          <li><code>X</code> — מה בראש המחסנית</li>
+          <li><code>γ</code> — מה מכניסים במקום X (יכול להיות <code>ε</code>)</li>
+        </ul>
+
+        <h3>קבלה</h3>
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">קלט נגמר + מחסנית ריקה</div>
+            <p class="muted" style="margin:0">רק אם שני התנאים מתקיימים — המילה מתקבלת.</p>
+          </div>
+        </div>
+
+        <h3>דוגמה: <span class="ltr">aⁿbⁿ</span></h3>
+        <ul>
+          <li>על כל <code>a</code> דוחפים A</li>
+          <li>על כל <code>b</code> מוציאים A</li>
+          <li>בסוף: קלט נגמר ומחסנית ריקה</li>
+        </ul>
+
+        <div class="img-slot"></div>
+
+        <div class="exam">
+          <div class="head">
+            <div class="ttl">סיכום למבחן — PDA</div>
+            <div class="tag">איך לבנות נכון</div>
+          </div>
+          <div class="body">
+            <div class="cols">
+              <div class="mini">
+                <div class="t"><span class="dot"></span>נקודות חובה</div>
+                <ul>
+                  <li>המחסנית “שומרת כמות אחת”: דוחפים בשלב ראשון, ומוציאים בשלב שני.</li>
+                  <li>במעבר מותר לקרוא <code>ε</code> וגם לשים <code>ε</code> במקום <code>γ</code> (לא לשים כלום).</li>
+                  <li>קבלה: לשים לב להגדרה (כאן: קלט נגמר + מחסנית ריקה).</li>
+                </ul>
+              </div>
+              <div class="mini">
+                <div class="t"><span class="dot"></span>טריקים</div>
+                <ul>
+                  <li>בשפות מהצורה <code>a*</code> ואז <code>b*</code> עם שוויון: “דוחפים על a, מוציאים על b”.</li>
+                  <li>אם צריך לוודא “לא חוזרים אחורה”: אחרי שעברת לשלב ה־<code>b</code> אל תאפשר יותר <code>a</code> (עם מצב נפרד).</li>
+                  <li>לסוגריים: דוחפים “(” ומוציאים על “)” — ריק בסוף = תקין.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRAMMARS -->
+      <section class="card theme-amber" id="grammars">
+        <h2>
+          <div class="h2row">
+            <span>דקדוקים</span>
+            <span class="badge">CFG</span>
+          </div>
+          <div class="h2line"></div>
+        </h2>
+
+        <h3>שפה של דקדוק</h3>
+        <p>דקדוק G מגדיר שפה <code>L(G)</code> — כל המילים שניתנות לגזירה מ-<code>S</code>.</p>
+
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">דגש</div>
+            <p class="muted" style="margin:0">מילה בשפה ⇔ קיימת גזירה שמסתיימת רק בתווי <code>Σ</code>.</p>
+          </div>
+        </div>
+
+        <h3>עצי גזירה + אמביגואיות</h3>
+        <p class="muted">אמביגואיות: אותה מילה עם שני עצי גזירה שונים (תכונה של הדקדוק).</p>
+
+        <div class="img-slot"></div>
+
+        <h3>דקדוק ליניארי</h3>
+        <p>בכל כלל יש לכל היותר משתנה אחד בצד ימין (ימני/שמאלי).</p>
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">דגש</div>
+            <p class="muted" style="margin:0">
+              דקדוק ליניארי ⇒ שפה רגולרית. לכן אם השפה לא רגולרית (כמו <code>aⁿbⁿ</code>) — הדקדוק לא ליניארי.
+            </p>
+          </div>
+        </div>
+
+        <h3>ε־כללים</h3>
+        <p>אם יש <code>A → ε</code> זה משפיע על האם <code>ε</code> בשפה ועל אורכי המילים.</p>
+
+        <div class="exam">
+          <div class="head">
+            <div class="ttl">סיכום למבחן — דקדוקים</div>
+            <div class="tag">מה שואלים</div>
+          </div>
+          <div class="body">
+            <div class="cols">
+              <div class="mini">
+                <div class="t"><span class="dot"></span>נקודות חובה</div>
+                <ul>
+                  <li><code>L(G)</code> = כל המילים שמתקבלות מגזירה שמסתיימת רק בטרמינלים.</li>
+                  <li>אמביגואיות היא תכונה של הדקדוק: <b>שני עצי גזירה</b> לאותה מילה.</li>
+                  <li>דקדוק ליניארי (משתנה אחד בצד ימין) ⇒ שפה רגולרית.</li>
+                  <li><code>ε</code>-כללים משפיעים ישירות על השאלה “האם <code>ε</code> בשפה”.</li>
+                </ul>
+              </div>
+              <div class="mini">
+                <div class="t"><span class="dot"></span>טריקים</div>
+                <ul>
+                  <li>אם ביקשו להראות אמביגואיות: תחפש מילה קצרה שאפשר “לחלק” בשתי דרכים (כמו אריתמטיקה/קדימויות).</li>
+                  <li>אם שואלים “האם הדקדוק רגולרי/ליניארי”: הסתכל על צד ימין של כל כלל — כמה משתנים יש שם.</li>
+                  <li>כשיש <code>A → ε</code>, תמיד לבדוק איך זה מאפשר “לקצר” ולהשפיע על מבנה המילים.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CFL -->
+      <section class="card theme-blue" id="cfl">
+        <h2>
+          <div class="h2row">
+            <span>שפות חסרות־הקשר (ח״ה)</span>
+            <span class="badge">CFL</span>
+          </div>
+          <div class="h2line"></div>
+        </h2>
+
+        <h3>אינטואיציה</h3>
+        <p class="muted">ח״ה = “תלות אחת” שמחסנית אחת יודעת לנהל.</p>
+
+        <h3>אפיונים שקולים</h3>
+        <ul>
+          <li>קיים CFG שמייצר את השפה</li>
+          <li>קיים PDA שמקבל את השפה</li>
+        </ul>
+
+        <h3>דוגמאות</h3>
+        <ul>
+          <li><code>aⁿbⁿ</code></li>
+          <li>סוגריים תקינים</li>
+          <li>פלינדרומים (ברוב המקרים)</li>
+        </ul>
+
+        <h3>לא ח״ה</h3>
+        <ul>
+          <li><code>aⁿbⁿcⁿ</code></li>
+        </ul>
+
+        <h3>סגירויות</h3>
+        <div class="callout ok">
+          <div class="icon">✅</div>
+          <div>
+            <div class="title">ח״ה סגורות תחת</div>
+            <p style="margin:0">איחוד, שרשור, כוכבית, היפוך</p>
+          </div>
+        </div>
+        <div class="callout bad">
+          <div class="icon">❌</div>
+          <div>
+            <div class="title">ח״ה לא סגורות תחת</div>
+            <p style="margin:0">חיתוך, משלים</p>
+          </div>
+        </div>
+        <div class="callout tip">
+          <div class="icon">⭐</div>
+          <div>
+            <div class="title">טריק</div>
+            <p class="muted" style="margin:0">
+              אם <code>L</code> ח״ה ו-<code>R</code> רגולרית ⇒ <code>L ∩ R</code> ח״ה.
+            </p>
+          </div>
+        </div>
+
+        <div class="exam">
+          <div class="head">
+            <div class="ttl">סיכום למבחן — CFL</div>
+            <div class="tag">סגירויות + זיהוי</div>
+          </div>
+          <div class="body">
+            <div class="cols">
+              <div class="mini">
+                <div class="t"><span class="dot"></span>נקודות חובה</div>
+                <ul>
+                  <li>ח״ה = מה ש-CFG מייצר / PDA מקבל (שני אפיונים שקולים).</li>
+                  <li>סגירויות ח״ה: איחוד, שרשור, <code>*</code>, היפוך. לא סגור: חיתוך/משלים.</li>
+                  <li>דוגמאות קלאסיות: <code>aⁿbⁿ</code>, סוגריים תקינים.</li>
+                  <li>לא ח״ה קלאסי: <code>aⁿbⁿcⁿ</code> (שתי תלויות).</li>
+                </ul>
+              </div>
+              <div class="mini">
+                <div class="t"><span class="dot"></span>טריקים</div>
+                <ul>
+                  <li>כדי להראות “לא ח״ה”: הרבה פעמים משתמשים בטריק “חתוך עם רגולרית” כדי לבודד שפה קשה.</li>
+                  <li>אם נתון <code>L</code> ח״ה ו-<code>R</code> רגולרית — מותר לך ישר לומר <code>L ∩ R</code> ח״ה.</li>
+                  <li>אם מבקשים “לבנות CFG/PDA”: תחשוב על “דוחף ואז מוציא” (תלות אחת) ותכתוב בהתאם.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  </div>
+</body>
+</html>

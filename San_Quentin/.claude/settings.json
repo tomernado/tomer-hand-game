@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/tomer/OneDrive/**)",
+      "Bash(cd /c/Users/tomer/OneDrive/שולחן העבודה/GTA)",
+      "Bash(npm --version)",
+      "Bash(npm info:*)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(npm create:*)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(find 'c:\\\\Users\\\\tomer\\\\OneDrive\\\\שולחן העבודה\\\\San_Quentin' -name *.png -o -name *.jpg -o -name *.jpeg -o -name *.webp)"
+    ]
+  }
+}

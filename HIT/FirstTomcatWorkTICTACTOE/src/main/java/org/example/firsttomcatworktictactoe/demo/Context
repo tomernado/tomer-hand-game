@@ -1,0 +1,18 @@
+package org.example.firsttomcatworktictactoe.demo;
+
+import jakarta.servlet.ServletContext;
+import org.example.firsttomcatworktictactoe.demo.worker.RoomWorker;
+
+public class Context {
+    public static final String ROOM_WORKER = "ROOM_WORKER";
+
+    public static RoomWorker getRoomWorker(ServletContext sc) {
+        Object o = sc.getAttribute(ROOM_WORKER);
+        if (o instanceof RoomWorker) {
+            return (RoomWorker) o;
+        }
+        RoomWorker rw = new RoomWorker();
+        sc.setAttribute(ROOM_WORKER, rw);
+        return rw;
+    }
+}

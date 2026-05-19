@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Falling Food Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Set dark theme by default */
+        :root {
+            --background-color: #2f2f2f;
+            --text-color: #ffffff;
+        }
+        
+        /* Override dark theme if user prefers light theme */
+        @media (prefers-color-scheme: light) {
+            :root {
+                --background-color: #ffffff;
+                --text-color: #2f2f2f;
+            }
+        }
+        
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: 'Arial', sans-serif;
+            background-image: linear-gradient(to bottom, #87ceeb, #32cd32);
+        }
+        
+        .game-container {
+            background-color: #4f4f4f;
+            border: 2px solid #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .score-container {
+            background-color: #6f6f6f;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ffffff;
+        }
+        
+        .lives-remaining {
+            background-color: #8f8f8f;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid #ffffff;
+        }
+    </style>
+</head>
+<body class="h-screen flex justify-center items-center">
+    <div class="game-container w-1/2 h-1/2 border border-gray-500 rounded">
+        <canvas id="game-canvas" class="w-full h-full"></canvas>
+        <div class="score-container absolute top-0 left-0 p-4 text-2xl font-bold flex space-x-4">
+            <span>Score: <span id="score" class="text-yellow-500">0</span></span>
+            <span>Lives: <span id="lives" class="text-red-500">3</span></span>
+        </div>
+        <div class="lives-remaining absolute bottom-0 left-0 p-4 text-lg font-bold">Use the arrow keys to move your player and catch the falling food!</div>
+    </div>
+    <script>
+        // Get the canvas element
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const livesElement = document.getElementById('lives');
+        
+        // Set the canvas dimensions
+        canvas.width = 400;
+        canvas.height = 400;
+        
+        // Define the player properties
+        let player = {
+            x: canvas.width / 2,
+            y: canvas.height - 50,
+            width: 50,
+            height: 50,
+            speed: 5
+        };
+        
+        // Define the food properties
+        let food = {
+            x: Math.random() * (canvas.width - 20),
+            y: 0,
+            width: 20,
+            height: 20,
+            speed: 2
+        };
+        
+        // Initialize score and lives
+        let score = 0;
+        let lives = 3;
+        
+        // Draw the player and food
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            // Draw sky
+            ctx.fillStyle = '#87ceeb';
+            ctx.fillRect(0, 0, canvas.width, canvas.height / 2);
+            // Draw grass
+            ctx.fillStyle = '#32cd32';
+            ctx.fillRect(0, canvas.height / 2, canvas.width, canvas.height / 2);
+            // Draw player as a cat
+            ctx.fillStyle = 'blue'; // Changed the color to blue
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+            ctx.fillStyle = 'black';
+            ctx.fillRect(player.x + 10, player.y + 10, 5, 5); // left eye
+            ctx.fillRect(player.x + 35, player.y + 10, 5, 5); // right eye
+            ctx.fillRect(player.x + 20, player.y + 30, 10, 5); // mouth
+            ctx.fillRect(player.x + 15, player.y + 40, 20, 10); // body
+            // Draw food as an apple
+            ctx.fillStyle = 'red';
+            ctx.beginPath();
+            ctx.arc(food.x + food.width / 2, food.y + food.height / 2, food.width / 2, 0, 2 * Math.PI);
+            ctx.fill();
+            ctx.fillStyle = 'green';
+            ctx.fillRect(food.x + food.width / 2 - 2, food.y + food.height / 2 - 10, 4, 10); // stem
+        }
+        
+        // Update the game state
+        function update() {
+            food.y += food.speed;
+            if (food.y > canvas.height) {
+                food.x = Math.random() * (canvas.width - 20);
+                food.y = 0;
+                lives--;
+                livesElement.textContent = lives;
+                if (lives === 0) {
+                    alert('Game Over! Your score is ' + score);
+                    location.reload();
+                }
+            }
+            if (checkCollision(player, food)) {
+                score++;
+                scoreElement.textContent = score;
+                food.x = Math.random() * (canvas.width - 20);
+                food.y = 0;
+            }
+        }
+        
+        // Check for collision between player and food
+        function checkCollision(player, food) {
+            if (player.x < food.x + food.width &&
+                player.x + player.width > food.x &&
+                player.y < food.y + food.height &&
+                player.y + player.height > food.y) {
+                return true;
+            }
+            return false;
+        }
+        
+        // Handle keyboard input
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                player.x -= player.speed;
+            } else if (e.key === 'ArrowRight') {
+                player.x += player.speed;
+            }
+            if (player.x < 0) {
+                player.x = 0;
+            } else if (player.x > canvas.width - player.width) {
+                player.x = canvas.width - player.width;
+            }
+        });
+        
+        // Main game loop
+        setInterval(() => {
+            draw();
+            update();
+        }, 1000 / 60);
+    </script>
+</body>
+</html>

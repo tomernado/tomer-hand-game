@@ -1,0 +1,6 @@
+{
+  "scripts": {
+    "dev": "npm run dev --prefix guitar-hero",
+    "build": "npm run build --prefix guitar-hero"
+  }
+}

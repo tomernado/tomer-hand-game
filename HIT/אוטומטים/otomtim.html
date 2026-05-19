@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>סיכום צבעוני - אוטומטים ושפות פורמליות</title>
+
+  <style>
+    :root{
+      --bg: #f3f4f6;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #6b7280;
+      
+      /* פלטות צבעים לנושאים */
+      --blue-head: #dbeafe; --blue-border: #2563eb; --blue-title: #1e40af;
+      --violet-head: #f3e8ff; --violet-border: #7c3aed; --violet-title: #5b21b6;
+      --green-head: #dcfce7; --green-border: #16a34a; --green-title: #166534;
+      --amber-head: #fef3c7; --amber-border: #d97706; --amber-title: #92400e;
+      --red-head: #fee2e2; --red-border: #dc2626; --red-title: #991b1b;
+      --cyan-head: #cffafe; --cyan-border: #06b6d4; --cyan-title: #155e75;
+
+      --radius: 16px;
+      --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    body{
+      margin: 0;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    h1 { margin: 0 0 10px 0; color: var(--text-main); font-weight: 900; letter-spacing: -1px; text-align: center; margin-bottom: 50px; font-size: 2.5em; }
+    h2 { margin: 0; font-size: 1.4em; font-weight: 800; }
+    h3 { margin: 0 0 15px 0; font-size: 1.2em; border-right: 5px solid #cbd5e1; padding-right: 10px; color: #374151; display: flex; align-items: center; }
+    
+    /* עיצוב הכרטיסייה */
+    .card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      margin-bottom: 40px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      border: 1px solid #e5e7eb;
+      position: relative;
+      
+      /* הגדרות להדפסה */
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    /* פס צבעוני עליון לכל כרטיסייה */
+    .card-header {
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid;
+    }
+    .tag { font-size: 0.85em; font-weight: 700; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(255,255,255,0.7); padding: 4px 8px; border-radius: 6px; }
+
+    /* החלת צבעים לפי מחלקות */
+    .theme-blue .card-header { background: var(--blue-head); border-color: var(--blue-border); color: var(--blue-title); }
+    .theme-blue { border-top: 5px solid var(--blue-border); }
+
+    .theme-violet .card-header { background: var(--violet-head); border-color: var(--violet-border); color: var(--violet-title); }
+    .theme-violet { border-top: 5px solid var(--violet-border); }
+
+    .theme-green .card-header { background: var(--green-head); border-color: var(--green-border); color: var(--green-title); }
+    .theme-green { border-top: 5px solid var(--green-border); }
+
+    .theme-amber .card-header { background: var(--amber-head); border-color: var(--amber-border); color: var(--amber-title); }
+    .theme-amber { border-top: 5px solid var(--amber-border); }
+
+    .theme-red .card-header { background: var(--red-head); border-color: var(--red-border); color: var(--red-title); }
+    .theme-red { border-top: 5px solid var(--red-border); }
+
+    .theme-cyan .card-header { background: var(--cyan-head); border-color: var(--cyan-border); color: var(--cyan-title); }
+    .theme-cyan { border-top: 5px solid var(--cyan-border); }
+
+    .content { padding: 30px; }
+
+    /* אלמנטים פנימיים */
+    .sub-section { margin-bottom: 35px; }
+    .sub-section:last-child { margin-bottom: 0; }
+
+    /* אינטואיציה */
+    .intuition {
+        background: #f8fafc;
+        padding: 15px 20px;
+        border-radius: 8px;
+        border-right: 4px solid #9ca3af;
+        font-style: italic;
+        color: #4b5563;
+        margin-bottom: 20px;
+    }
+    .intuition strong { color: #111827; font-style: normal; display: block; margin-bottom: 5px; }
+
+    /* תיבה פרקטית / דוגמאות */
+    .practical {
+        background: #fff;
+        border: 2px dashed #d1d5db;
+        padding: 20px;
+        border-radius: 12px;
+        margin-top: 15px;
+    }
+    .practical h4 { margin-top: 0; text-decoration: underline; color: #374151; }
+
+    /* אזהרות */
+    .warning {
+        background: #fff5f5;
+        border: 1px solid #feb2b2;
+        color: #9b2c2c;
+        padding: 15px;
+        border-radius: 8px;
+        margin-top: 20px;
+        font-weight: 500;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    /* טיפול במתמטיקה ואנגלית בתוך עברית */
+    .math {
+        direction: ltr;
+        unicode-bidi: isolate;
+        font-family: "Consolas", "Monaco", monospace;
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid #e5e7eb;
+        font-size: 0.95em;
+        display: inline-block;
+    }
+
+    /* פלייס-הולדר לתמונות */
+    .img-slot {
+        width: 100%;
+        height: 140px;
+        background: #f9fafb;
+        border: 2px dashed #cbd5e1;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: #94a3b8;
+        margin: 20px 0;
+        font-weight: bold;
+        text-align: center;
+    }
+    .img-slot small { font-weight: normal; margin-top: 5px; }
+
+    ul, ol { padding-right: 25px; margin: 0; }
+    li { margin-bottom: 8px; }
+
+    /* קופסאות סיווג */
+    .class-grid { display: grid; gap: 15px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+    .class-box { padding: 15px; border-radius: 10px; border: 1px solid; }
+    .reg-box { background: #ecfdf5; border-color: #6ee7b7; color: #064e3b; }
+    .cfl-box { background: #fffbeb; border-color: #fcd34d; color: #78350f; }
+    .not-box { background: #fef2f2; border-color: #fca5a5; color: #7f1d1d; }
+
+    /* הגדרות הדפסה קריטיות (עמוד חדש לכל כרטיס) */
+    @media print {
+        body { background: #fff; padding: 0; margin: 0; width: 100%; max-width: 100%; }
+        .card { 
+            break-inside: avoid; 
+            page-break-inside: avoid;
+            page-break-before: always; 
+            border: 1px solid #ccc;
+            box-shadow: none;
+            margin: 0 0 20px 0;
+            width: 100%;
+        }
+        .card:first-of-type { page-break-before: auto; } 
+        * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>סיכום מקיף: אוטומטים ושפות פורמליות</h1>
+  <p style="text-align:center; color:#6b7280; margin-bottom:40px;">גרסה פרקטית למבחן | מחולק לפי צבעים ונושאים</p>
+
+  <div class="card theme-blue">
+    <div class="card-header">
+      <h2>1. מבוא והגדרות בסיס</h2>
+      <span class="tag">Basics</span>
+    </div>
+    <div class="content">
+      <div class="sub-section">
+        <h3>אינטואיציה מרכזית</h3>
+        <div class="intuition">
+           <strong>הכל עניין של זיכרון.</strong>
+           אנחנו מודדים כמה "זיכרון" המחשב צריך כדי לדעת אם המילה חוקית.
+           <br>זיכרון הכי חלש = <strong>רגולרית</strong> (אס"ד).
+           <br>זיכרון מחסנית = <strong>ח"ה</strong> (PDA).
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>הגדרות ודגשים טכניים</h3>
+        <ul>
+            <li><strong>א"ב (<span class="math">&Sigma;</span>):</strong> קבוצה סופית של תווים. למשל <span class="math">{0,1}</span>.</li>
+            <li><strong>מילה ריקה (<span class="math">&epsilon;</span>):</strong> מילה באורך 0. שים לב: היא שונה מ-<span class="math">&empty;</span> (הקבוצה הריקה).</li>
+            <li><strong>השפה האוניברסלית (<span class="math">&Sigma;<sup>*</sup></span>):</strong> אוסף כל המילים האפשריות (קבוצה אינסופית).</li>
+            <li><strong>שפה (<span class="math">L</span>):</strong> תת-קבוצה כלשהי של <span class="math">&Sigma;<sup>*</sup></span>.</li>
+        </ul>
+      </div>
+
+      <div class="sub-section">
+        <h3>גישה לפתרון תרגילים (פעולות)</h3>
+        <div class="practical">
+            <h4>ניתוח פעולות</h4>
+            <ul>
+                <li><strong>שרשור (<span class="math">L<sub>1</sub>L<sub>2</sub></span>):</strong> לוקחים מילה מ-<span class="math">L<sub>1</sub></span> ומדביקים לה מילה מ-<span class="math">L<sub>2</sub></span>.
+                    <br><small>דוגמה: אם <span class="math">L<sub>1</sub>={a}</span> ו-<span class="math">L<sub>2</sub>={b, bb}</span>, השרשור הוא <span class="math">{ab, abb}</span>.</small></li>
+                <li><strong>כוכבית (<span class="math">L<sup>*</sup></span>):</strong> בחירה ושרשור של מילים מהשפה, 0 פעמים או יותר. תמיד מכיל <span class="math">&epsilon;</span>.</li>
+                <li><strong>הפרש שפות (<span class="math">A \ B</span>):</strong> כל המילים שנמצאות ב-<span class="math">A</span>, פחות אלו שנמצאות גם ב-<span class="math">B</span>.</li>
+            </ul>
+        </div>
+      </div>
+
+      <div class="warning">
+        <div><strong>⚠️ מלכודות במבחן:</strong>
+        <br>1. <span class="math">&empty;<sup>*</sup> = {&epsilon;}</span> (ולא קבוצה ריקה!).
+        <br>2. השפה <span class="math">&Sigma;<sup>*</sup></span> היא אינסופית, אבל כל מילה בתוכה היא סופית.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-violet">
+    <div class="card-header">
+      <h2>2. סיווג שפות (ההיררכיה)</h2>
+      <span class="tag">Hierarchy</span>
+    </div>
+    <div class="content">
+      
+      <div class="sub-section">
+        <h3>צ'ק ליסט לזיהוי מהיר</h3>
+        <div class="class-grid">
+            <div class="class-box reg-box">
+                <strong>1. רגולרית (זיכרון סופי)</strong>
+                <br>חפש:
+                <ul>
+                    <li>מגבלה סופית ("מכיל 01", "עד 1000 תווים").</li>
+                    <li>מודולו (זוגי/אי-זוגי, מתחלק ב-3).</li>
+                    <li>בלוקים ללא קשר כמותי (<span class="math">a<sup>*</sup> b<sup>*</sup></span>).</li>
+                </ul>
+            </div>
+
+            <div class="class-box cfl-box">
+                <strong>2. חסרת הקשר - ח"ה</strong>
+                <br>חפש:
+                <ul>
+                    <li>תלות אחת של כמויות (<span class="math">a<sup>n</sup> b<sup>n</sup></span>).</li>
+                    <li>סימטריה / פלינדרום (<span class="math">ww<sup>R</sup></span>).</li>
+                    <li>השוואה כמותית (<span class="math">#a = #b</span>).</li>
+                </ul>
+            </div>
+
+            <div class="class-box not-box">
+                <strong>3. לא ח"ה (קשה מדי)</strong>
+                <br>חפש:
+                <ul>
+                    <li>שלוש תלויות (<span class="math">a<sup>n</sup> b<sup>n</sup> c<sup>n</sup></span>).</li>
+                    <li>תלות צולבת (<span class="math">a<sup>n</sup> b<sup>m</sup> c<sup>n</sup> d<sup>m</sup></span>).</li>
+                    <li>העתקה (<span class="math">ww</span>) - דורש לזכור הכל.</li>
+                </ul>
+            </div>
+        </div>
+      </div>
+      
+      <div class="img-slot">
+        <span>[הדבק כאן: תמונה של דיאגרמת ההיררכיה (חומסקי)]</span>
+      </div>
+
+      <div class="warning">
+        <div><strong>⚠️ דגש קריטי:</strong>
+        זה ששפה <span class="math">L<sub>1</sub></span> מוכלת ב-<span class="math">L<sub>2</sub></span> (שהיא רגולרית), לא אומר ש-<span class="math">L<sub>1</sub></span> רגולרית.
+        <br>דוגמה: <span class="math">{a<sup>n</sup>b<sup>n</sup>} &sube; &Sigma;<sup>*</sup></span>. הראשונה ח"ה, השנייה רגולרית.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-green">
+    <div class="card-header">
+      <h2>3. אוטומטים סופיים (אס"ד / אסל"ד)</h2>
+      <span class="tag">Machines</span>
+    </div>
+    <div class="content">
+      
+      <div class="sub-section">
+        <h3>אינטואיציה</h3>
+        <div class="intuition">
+            טיול על גרף. כל אות לוקחת אותך למצב הבא. המכונה "זוכרת" רק באיזה עיגול היא נמצאת כרגע. אם המילה נגמרה במצב מקבל (עיגול כפול) - היא התקבלה.
+        </div>
+        <div class="img-slot">
+            <span>[הדבק כאן: ציור כללי של אוטומט]</span>
+            <small>סימונים: חץ התחלה, מצבים (עיגולים), מעברים (חצים), מצב מקבל (עיגול כפול)</small>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>ההבדלים הטכניים</h3>
+        <div class="practical">
+            <strong>אס"ד (DFA - דטרמיניסטי):</strong>
+            <ul>
+                <li>מכל מצב יוצא חץ אחד <strong>בדיוק</strong> לכל תו.</li>
+                <li>חייב להיות שלם (אם נתקעים &larr; הולכים למצב "מלכודת" Trap).</li>
+                <li>אין ניחושים.</li>
+            </ul>
+            <hr style="border-top:1px dashed #ccc; margin:15px 0;">
+            <strong>אסל"ד (NFA - לא דטרמיניסטי):</strong>
+            <ul>
+                <li>מותר כמה חצים לאותה אות (ניחוש).</li>
+                <li>מותר מעברי <span class="math">&epsilon;</span> (דילוג חינם).</li>
+                <li>אם אין חץ מתאים, המכונה נתקעת (והמסלול מת).</li>
+                <li><strong>קבלה:</strong> אם קיים לפחות מסלול אחד שמצליח.</li>
+            </ul>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>גישה לפתרון תרגילים</h3>
+        <div class="practical">
+            <h4>סוג 1: בניית אוטומט</h4>
+            <ul>
+                <li><strong>שאלות מודולו (מתחלק ב-3):</strong> צייר מעגל של 3 מצבים (<span class="math">q<sub>0</sub>, q<sub>1</sub>, q<sub>2</sub></span>). כל אות מקדמת צעד.</li>
+                <li><strong>"מכיל את רצף abc":</strong> בנה שרשרת <span class="math">q<sub>0</sub> &rarr; q<sub>1</sub>(a) &rarr; q<sub>2</sub>(b) &rarr; q<sub>3</sub>(c)</span>. במצב האחרון נשארים לנצח.</li>
+                <li><strong>"האות השלישית מהסוף היא a":</strong> השתמש באסל"ד! תמיד תהיה בהתחלה, וגם תנחש שהסוף הגיע (מעבר עם a לשלושת המצבים האחרונים).</li>
+            </ul>
+        </div>
+
+        <div class="practical">
+            <h4>סוג 2: המרה מאסל"ד לאס"ד</h4>
+            <ol>
+                <li>בנה טבלה: עמודות = תווים, שורות = קבוצות מצבים.</li>
+                <li>מצב ההתחלה החדש = <span class="math">&epsilon;-closure({q<sub>0</sub>})</span> (כל מה שאפשר להגיע אליו עם אפסילון).</li>
+                <li>מלא את הטבלה: לאן מגיעה כל קבוצה? (איחוד המצבים).</li>
+            </ol>
+        </div>
+      </div>
+
+      <div class="img-slot">
+        <span>[הדבק כאן: דוגמה לתרגיל המרה מאסל"ד לאס"ד (טבלה + שרטוט)]</span>
+      </div>
+
+      <div class="warning">
+        <div><strong>⚠️ כלל ברזל למבחן:</strong>
+        רוצים לבנות <strong>משלים</strong> לשפה?
+        <br>1. בונים אס"ד (חייב להיות דטרמיניסטי ומלא!).
+        <br>2. הופכים: מקבל &harr; לא מקבל.
+        <br><strong>אסור לעשות משלים על אסל"ד!</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-amber">
+    <div class="card-header">
+      <h2>4. ביטויים רגולריים (Regex)</h2>
+      <span class="tag">Regex</span>
+    </div>
+    <div class="content">
+      <div class="sub-section">
+        <h3>אינטואיציה</h3>
+        <p>כתיבת השפה כנוסחה. <span class="math">*</span> = לולאה, <span class="math">+</span> = בחירה (או), שרשור = רצף.</p>
+      </div>
+
+      <div class="sub-section">
+        <h3>תבניות זהב לפתרון</h3>
+        <div class="practical">
+            <ul>
+                <li><strong>מתחיל ב-a:</strong> <span class="math">a&Sigma;<sup>*</sup></span></li>
+                <li><strong>מסתיים ב-bb:</strong> <span class="math">&Sigma;<sup>*</sup>bb</span></li>
+                <li><strong>מכיל את aba:</strong> <span class="math">&Sigma;<sup>*</sup>aba&Sigma;<sup>*</sup></span></li>
+                <li><strong>מספר זוגי של a:</strong> <span class="math">(b<sup>*</sup> a b<sup>*</sup> a b<sup>*</sup>)<sup>*</sup></span>
+                    <br><small>הסבר: ה-b חופשיים, ה-a חייבים לבוא בזוגות בתוך הבלוק.</small></li>
+                <li><strong>לפחות a אחד:</strong> <span class="math">&Sigma;<sup>*</sup>a&Sigma;<sup>*</sup></span></li>
+            </ul>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>מעבר מאוטומט לביטוי</h3>
+        <p><strong>שיטת הניפוי (State Elimination):</strong></p>
+        <ol>
+            <li>מוסיפים מצב התחלה חדש ומצב סוף חדש.</li>
+            <li>בוחרים מצב למחיקה (<span class="math">q</span>).</li>
+            <li>יוצרים "גשר" (ביטוי רגולרי) לכל מסלול שעבר דרך <span class="math">q</span>.</li>
+            <li>חוזרים עד שנשאר רק המעבר מההתחלה לסוף.</li>
+        </ol>
+        <div class="img-slot">
+            <span>[הדבק כאן: דוגמה פתורה של מעבר מאוטומט לביטוי רגולרי]</span>
+        </div>
+      </div>
+
+      <div class="warning">
+        <div><strong>⚠️ שים לב להבדל:</strong>
+        <br><span class="math">(ab)<sup>*</sup></span> = <span class="math">{&epsilon;, ab, abab, ababab...}</span>
+        <br><span class="math">a<sup>*</sup>b<sup>*</sup></span> = <span class="math">{&epsilon;, a, b, aa, ab, bb, aaa...}</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-red">
+    <div class="card-header">
+      <h2>5. למת הניפוח (הוכחת אי-רגולריות)</h2>
+      <span class="tag">Proof</span>
+    </div>
+    <div class="content">
+      <div class="sub-section">
+        <h3>אינטואיציה</h3>
+        <div class="intuition">
+            אם השפה רגולרית &larr; יש לה אוטומט סופי.
+            אם ניקח מילה ענקית, חייבים לעבור באותו מצב פעמיים &larr; נוצר <strong>מעגל</strong>.
+            הלמה אומרת: "אם יש מעגל, אפשר לרוץ עליו שוב ושוב (לנפח) ולהישאר בשפה". אם ניפחנו ויצאנו מהשפה &larr; סתירה &larr; לא רגולרית.
+        </div>
+        
+        <p><strong>החלוקה <span class="math">z = uvw</span>:</strong></p>
+        <ul>
+            <li><span class="math">u</span>: החלק לפני המעגל.</li>
+            <li><span class="math">v</span>: המעגל עצמו (מה שמנפחים). חובה <span class="math">|v| &ge; 1</span>.</li>
+            <li><span class="math">w</span>: החלק אחרי המעגל.</li>
+            <li>תנאי חשוב: <span class="math">|uv| &le; n</span> (המעגל קרוב להתחלה).</li>
+        </ul>
+        <div class="img-slot">
+            <span>[הדבק כאן: ציור "הבלון" הממחיש מסלול עם מעגל v באמצע]</span>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>האלגוריתם המלא להוכחה</h3>
+        <div class="practical">
+            <ol>
+                <li><strong>הנחה:</strong> נניח בשלילה ש-<span class="math">L</span> רגולרית. יהי <span class="math">n</span> קבוע הניפוח.</li>
+                <li><strong>בחירה (קריטי):</strong> נבחר מילה <span class="math">z</span> שתלויה ב-<span class="math">n</span> ושייכת לשפה.
+                    <br><em>טיפ:</em> לשפת <span class="math">a<sup>n</sup>b<sup>n</sup></span> נבחר <span class="math">z = a<sup>n</sup>b<sup>n</sup></span>.</li>
+                <li><strong>פירוק:</strong> תהי חלוקה כללית <span class="math">z = uvw</span> המקיימת:
+                    <ul>
+                        <li><span class="math">|uv| &le; n</span></li>
+                        <li><span class="math">|v| &ge; 1</span></li>
+                    </ul>
+                </li>
+                <li><strong>ניתוח:</strong> לפי החלוקה, <span class="math">v</span> חייב להיות מורכב רק מ-<span class="math">a</span> (כי <span class="math">uv</span> מוכל ב-<span class="math">n</span> האותיות הראשונות).</li>
+                <li><strong>הניפוח (סתירה):</strong> נבחר <span class="math">i</span> (למשל <span class="math">i=2</span>). המילה החדשה <span class="math">z' = u v<sup>2</sup> w</span> מכילה יותר <span class="math">a</span> מ-<span class="math">b</span> &larr; לא בשפה &larr; סתירה!</li>
+            </ol>
+        </div>
+      </div>
+
+      <div class="sub-section">
+          <h3>דוגמה מלאה לפתרון (להעתקה)</h3>
+          <div class="practical">
+              <strong>הוכח ש-<span class="math">L = \{a<sup>n</sup>b<sup>n</sup>\}</span> לא רגולרית.</strong>
+              <br><br>
+              1. נניח בשלילה שרגולרית, יהי <span class="math">n</span> הקבוע.
+              <br>
+              2. נבחר <span class="math">z = a<sup>n</sup>b<sup>n</sup></span>. (ברור ש-<span class="math">z &isin; L</span> ואורכה <span class="math">2n &ge; n</span>).
+              <br>
+              3. תהי חלוקה <span class="math">z=uvw</span>, המקיימת את תנאי הלמה.
+              <br>
+              4. בגלל ש-<span class="math">|uv|&le;n</span>, החלק <span class="math">uv</span> נופל כולו בתוך רצף ה-<span class="math">a</span>.
+              <br>
+              לכן <span class="math">v</span> מכיל רק <span class="math">a</span> (כלומר <span class="math">v=a<sup>k</sup></span> עבור <span class="math">k &ge; 1</span>).
+              <br>
+              5. נבחר <span class="math">i=2</span> (ננפח). המילה שתתקבל: <span class="math">a<sup>n+k</sup>b<sup>n</sup></span>.
+              <br>
+              קיבלנו מילה שבה מספר ה-<span class="math">a</span> גדול ממספר ה-<span class="math">b</span>. מילה זו אינה ב-<span class="math">L</span>. סתירה להנחה.
+          </div>
+      </div>
+
+      <div class="warning">
+         <div><strong>⚠️ מה אסור לעשות?</strong>
+         <br>אסור לבחור את <span class="math">n</span> (הוא נתון).
+         <br>אסור לבחור חלוקה ספציפית ל-<span class="math">u,v,w</span> (חייבים להראות סתירה לכל חלוקה).</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-violet">
+    <div class="card-header">
+      <h2>6. משפט נרוד ו-Rank</h2>
+      <span class="tag">Rank</span>
+    </div>
+    <div class="content">
+      <div class="sub-section">
+        <h3>יחס שקילות ו-Rank</h3>
+        <p><strong>יחס שקילות (<span class="math">R<sub>L</sub></span>):</strong> שתי מילים <span class="math">x, y</span> הן שקולות אם "יש להן אותו עתיד". כלומר, לכל סיומת <span class="math">z</span>, או ששתיהן מתקבלות או ששתיהן נדחות.</p>
+        <p><strong>Rank (דרגה):</strong> מספר מחלקות השקילות של השפה.
+           <br>זהו בדיוק <strong>מספר המצבים ב-DFA המינימלי</strong> של השפה.</p>
+      </div>
+
+      <div class="sub-section">
+        <h3>מילה מפרידה</h3>
+        <div class="intuition">
+            כדי להוכיח ששתי מילים שונות (<span class="math">x, y</span>) חייבות להגיע למצבים שונים, צריך למצוא מילה <span class="math">z</span> שתפריד ביניהן (אחת תתקבל ואחת לא).
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>דוגמה וגישה לתרגיל</h3>
+        <div class="practical">
+            <strong>שאלה: מה ה-Rank של שפת המילים באורך זוגי מעל <span class="math">{a}</span>?</strong>
+            <br><br>
+            האינטואיציה: האוטומט צריך לזכור רק שני דברים: "כרגע זוגי" או "כרגע אי-זוגי". לכן ה-Rank יהיה 2.
+            <br><strong>הוכחה פורמלית:</strong>
+            <ul>
+                <li>ניקח מילה באורך זוגי: <span class="math">x = aa</span>.</li>
+                <li>ניקח מילה באורך אי-זוגי: <span class="math">y = a</span>.</li>
+                <li>נחפש מפריד <span class="math">z</span>: המילה הריקה <span class="math">&epsilon;</span> תעבוד.
+                    <br> <span class="math">x \cdot &epsilon; = aa</span> (זוגי &rarr; בשפה).
+                    <br> <span class="math">y \cdot &epsilon; = a</span> (אי-זוגי &rarr; לא בשפה).
+                </li>
+                <li>מסקנה: <span class="math">x</span> ו-<span class="math">y</span> לא שקולות. יש לפחות 2 מחלקות.</li>
+                <li>כל מילה אחרת שקולה לאחת מאלה. לכן <strong>Rank = 2</strong>.</li>
+            </ul>
+        </div>
+      </div>
+      
+      <div class="img-slot">
+         <span>[הדבק כאן: דוגמה למציאת מפריד לשפה L (למשל שארית חלוקה ב-3)]</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-blue">
+    <div class="card-header">
+      <h2>7. אוטומט מחסנית (PDA)</h2>
+      <span class="tag">PDA</span>
+    </div>
+    <div class="content">
+      <div class="sub-section">
+        <h3>אינטואיציה</h3>
+        <div class="intuition">
+            כמו אוטומט רגיל, אבל עם "מחסנית פנקייקים" בצד.
+            אפשר לשים (PUSH) או לאכול מלמעלה (POP). זה נותן יכולת לספור ולבצע התאמות (LIFO).
+        </div>
+        <div class="img-slot">
+            <span>[הדבק כאן: שרטוט של מעבר PDA (קלט, שליפה, דחיפה)]</span>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>איך בונים PDA? (הגישה לפתרון)</h3>
+        <div class="practical">
+            <h4>דוגמה: השפה <span class="math">a<sup>n</sup>b<sup>n</sup></span></h4>
+            <ol>
+                <li><strong>מצב 1 (דחיפה):</strong> כל עוד מגיע <span class="math">a</span>, דחוף <span class="math">A</span> למחסנית.</li>
+                <li><strong>מעבר:</strong> כשמגיע <span class="math">b</span> ראשון (או בניחוש באסל"ד), עבור למצב 2.</li>
+                <li><strong>מצב 2 (שליפה):</strong> על כל <span class="math">b</span> שמגיע, שלוף <span class="math">A</span> מהמחסנית.</li>
+                <li><strong>קבלה:</strong> אם הקלט נגמר והמחסנית ריקה (או הגענו לסימן תחתית) - קבל.</li>
+            </ol>
+        </div>
+      </div>
+
+      <div class="warning">
+        <div><strong>⚠️ דגש חשוב:</strong>
+        בניגוד לאוטומטים סופיים: <strong>PDA דטרמיניסטי חלש יותר מ-PDA לא דטרמיניסטי.</strong>
+        <br>למשל, השפה <span class="math">ww<sup>R</sup></span> (פלינדרום) דורשת ניחוש ולכן היא לא דטרמיניסטית.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-amber">
+    <div class="card-header">
+      <h2>8. דקדוקים (CFG)</h2>
+      <span class="tag">CFG</span>
+    </div>
+    <div class="content">
+      <div class="sub-section">
+        <h3>אינטואיציה ועצי גזירה</h3>
+        <p>מערכת של חוקי גזירה (החלפה). מתחילים מ-<span class="math">S</span> ומחליפים משתנים עד שנשארות רק אותיות.</p>
+        <ul>
+            <li><strong>עץ גזירה:</strong> ציור שמראה איזה חוק הופעל בכל שלב.</li>
+            <li><strong>אמביגואיות (דו-משמעות):</strong> אם למילה אחת יש <strong>שני עצי גזירה שונים</strong> (באותו דקדוק).</li>
+            <li><strong>דקדוק ליניארי:</strong> בכל צד ימין יש לכל היותר משתנה אחד &rarr; שקול לשפה רגולרית!</li>
+        </ul>
+        <div class="img-slot">
+            <span>[הדבק כאן: תמונה של עץ גזירה למילה aaabbb]</span>
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>טריקים לבניית דקדוק</h3>
+        <div class="practical">
+            <ul>
+                <li><strong>רקורסיה באמצע (<span class="math">a<sup>n</sup>b<sup>n</sup></span>):</strong> <span class="math">S &rarr; aSb | &epsilon;</span></li>
+                <li><strong>איחוד (<span class="math">L<sub>1</sub> &cup; L<sub>2</sub></span>):</strong> <span class="math">S &rarr; S<sub>1</sub> | S<sub>2</sub></span></li>
+                <li><strong>שרשור (<span class="math">L<sub>1</sub> L<sub>2</sub></span>):</strong> <span class="math">S &rarr; S<sub>1</sub> S<sub>2</sub></span></li>
+                <li><strong>פלינדרום:</strong> <span class="math">S &rarr; aSa | bSb | &epsilon;</span></li>
+                <li><strong>סוגריים מאוזנים:</strong> <span class="math">S &rarr; (S) | SS | &epsilon;</span></li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-cyan">
+    <div class="card-header">
+      <h2>9. העמקה: שפות חסרות הקשר (ח"ה)</h2>
+      <span class="tag">Deep Dive</span>
+    </div>
+    <div class="content">
+      <div class="sub-section">
+        <h3>מהי שפה ח"ה?</h3>
+        <div class="intuition">
+            שפה שניתן ליצור ע"י דקדוק חסר הקשר (CFG) או לקבל ע"י אוטומט מחסנית (PDA).
+            היא מייצגת מבנים היררכיים (כמו קוד תכנות, ביטויים חשבוניים, סוגריים).
+        </div>
+      </div>
+
+      <div class="sub-section">
+        <h3>ההבדל בין דטרמיניסטי ללא-דטרמיניסטי</h3>
+        <div class="practical">
+            <ul>
+                <li><strong>ח"ה דטרמיניסטית (DCFL):</strong> שפות שאפשר לקבל ע"י DPDA (אוטומט מחסנית דטרמיניסטי).
+                    <br><em>דוגמה:</em> <span class="math">a<sup>n</sup>b<sup>n</sup></span> (ברור מתי עוברים מ-a ל-b, אין ניחושים).</li>
+                <li><strong>ח"ה לא דטרמיניסטית:</strong> שפות שדורשות "ניחוש". DPDA לא מספיק להן.
+                    <br><em>דוגמה קלאסית:</em> פלינדרומים <span class="math">ww<sup>R</sup></span> (האוטומט לא יודע איפה האמצע בלי לנחש).</li>
+            </ul>
+        </div>
+        <p><strong>היררכיה פנימית:</strong> רגולריות &sub; ח"ה דטרמיניסטיות &sub; ח"ה.</p>
+      </div>
+
+      <div class="sub-section">
+        <h3>מה <u>אינו</u> ח"ה?</h3>
+        <ul>
+            <li><strong>שפות התלויות ב-3 גורמים:</strong> <span class="math">a<sup>n</sup>b<sup>n</sup>c<sup>n</sup></span> (המחסנית יכולה להשוות a ל-b, אבל אז היא ריקה ולא ניתן להשוות ל-c).</li>
+            <li><strong>שפות העתקה:</strong> <span class="math">ww</span> (דורש זיכרון של רצף אקראי שלם ושליפתו באותו סדר, אבל מחסנית הופכת סדר).</li>
+            <li><strong>תלות צולבת:</strong> <span class="math">a<sup>n</sup>b<sup>m</sup>c<sup>n</sup>d<sup>m</sup></span>.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card theme-green">
+    <div class="card-header">
+      <h2>10. תכונות סגירות</h2>
+      <span class="tag">Closure</span>
+    </div>
+    <div class="content">
+      <div class="sub-section">
+        <h3>טבלת סגירות מסכמת</h3>
+        <ul>
+            <li><strong>רגולריות:</strong> סגורות להכל (איחוד, חיתוך, משלים, שרשור, כוכבית).</li>
+            <li><strong>ח"ה (CFL):</strong> 
+                <br>&check; סגורות ל: איחוד, שרשור, כוכבית, היפוך.
+                <br>&cross; <strong style="color:#b91c1c">לא סגורות</strong> ל: חיתוך, משלים.</li>
+        </ul>
+      </div>
+      
+      <div class="practical">
+          <h4>טריקים נפוצים למבחן</h4>
+          <ul>
+              <li><strong>חיתוך ח"ה עם רגולרית &rarr; נשאר ח"ה.</strong>
+                  <br>(שימושי להוכחה ששפה אינה ח"ה ע"י חיתוך וסתירה).</li>
+              <li><strong>חיתוך שתי שפות ח"ה &rarr; לרוב לא ח"ה.</strong>
+                  <br>דוגמה: <span class="math">L<sub>1</sub>={a<sup>n</sup>b<sup>n</sup>c<sup>*</sup>}</span> חיתוך עם <span class="math">L<sub>2</sub>={a<sup>*</sup>b<sup>n</sup>c<sup>n</sup>}</span> נותן <span class="math">a<sup>n</sup>b<sup>n</sup>c<sup>n</sup></span>.</li>
+          </ul>
+      </div>
+      
+      <div class="img-slot">
+        <span>[הדבק כאן: טבלת סגירות מלאה מהמחברת]</span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

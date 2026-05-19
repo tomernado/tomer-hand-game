@@ -1,0 +1,8 @@
+/app/room/getRoom 200 {roomNumber:12, palyerToken:131, type:X}
+/app/room/joinRoon 200 {palyerToken:132, type:O} 400 if room full
+/app/endGame?room=${roomNumber}&palyerToken=${palyerToken}
+
+/app/game/state?room=${roomNumber} 200 {matrix:[[1,2,3][4,5,6][7,8,9]], whoWon:null,X,O, turn:X}
+/app/game/turn?i=1&j=2&palyerToken=123&roomNumber=123 200 secede 202 failed
+/app/game/newGame?room=${roomNumber}&palyerToken=${palyerToken}
+

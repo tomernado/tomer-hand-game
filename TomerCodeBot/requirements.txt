@@ -1,0 +1,7 @@
+python-telegram-bot
+google-generativeai
+python-dotenv
+streamlit
+pytest
+pypdf
+groq

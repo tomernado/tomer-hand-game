@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Space Shooter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-image: linear-gradient(to bottom, #000000, #03055B);
+            color: #ffffff;
+            background-size: 100% 100%;
+        }
+        @media (prefers-color-scheme: dark) {
+            body {
+                background-image: linear-gradient(to bottom, #000000, #03055B);
+                color: #ffffff;
+            }
+        }
+        @media (prefers-color-scheme: light) {
+            body {
+                background-image: linear-gradient(to bottom, #000000, #03055B);
+                color: #ffffff;
+            }
+        }
+        .star {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background-color: #ffffff;
+            border-radius: 50%;
+        }
+        .player {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            border: 2px solid #cccccc;
+        }
+        .player::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 45px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 15px 30px 15px;
+            border-color: transparent transparent #ffffff transparent;
+        }
+        .player::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 45px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 30px 15px 0 15px;
+            border-color: #ffffff transparent transparent transparent;
+        }
+        .jet {
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            bottom: -20px;
+            left: 45px;
+        }
+        .angry-eyes {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            top: 20px;
+            left: 20px;
+        }
+        .angry-mouth {
+            position: absolute;
+            width: 40px;
+            height: 10px;
+            background-color: #ff0000;
+            border-radius: 10px;
+            top: 50px;
+            left: 15px;
+        }
+        .angrier-eyes {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            top: 15px;
+            left: 15px;
+        }
+        .angrier-mouth {
+            position: absolute;
+            width: 50px;
+            height: 15px;
+            background-color: #ff0000;
+            border-radius: 15px;
+            top: 45px;
+            left: 10px;
+        }
+        .boss {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background-color: #ff0000; /* Changed to red */
+            border-radius: 10px;
+            border: 2px solid #cccccc;
+        }
+        .boss-eyes {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            top: 30px;
+            left: 30px;
+        }
+        .boss-eyes2 {
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            top: 30px;
+            left: 90px;
+        }
+        .boss-mouth {
+            position: absolute;
+            width: 60px;
+            height: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            top: 80px;
+            left: 45px;
+        }
+        .boss::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 70px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 15px 30px 15px;
+            border-color: transparent transparent #ff0000 transparent; /* Changed to red */
+        }
+        .boss::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 70px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 30px 15px 0 15px;
+            border-color: #ff0000 transparent transparent transparent; /* Changed to red */
+        }
+        .boss-health {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 24px;
+            color: #ffffff;
+        }
+        .enemy {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            background-color: #ff0000; /* Changed to red */
+            border-radius: 10px;
+            border: 2px solid #cccccc;
+        }
+        .title {
+            background: linear-gradient(to right, #ff69b4, #ffe66d, #8bc34a, #03a9f4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .heart {
+            width: 50px;
+            height: 50px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body class="h-screen flex justify-center items-center flex-col">
+    <h1 class="text-9xl mb-4 font-bold title">Space Shooter</h1>
+    <canvas id="game-canvas" width="1200" height="800" class="border border-white"></canvas>
+    <div class="text-6xl mb-4 flex justify-center">
+        <div class="mr-4 flex">Lives: 
+            <div id="lives" class="flex">
+                <div class="heart"></div>
+                <div class="heart"></div>
+                <div class="heart"></div>
+            </div>
+        </div>
+        <div>Score: <span id="score" class="text-7xl font-bold">0</span></div>
+    </div>
+    <button id="start-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-3xl">Start Game</button>
+    <script>
+        let canvas = document.getElementById('game-canvas');
+        let ctx = canvas.getContext('2d');
+        let lives = 3;
+        let score = 0;
+        let enemies = [];
+        let player = { x: canvas.width / 2, y: canvas.height - 120 };
+        let bullets = [];
+        let moveLeft = false;
+        let moveRight = false;
+        let shoot = false;
+        let boss = null;
+        
+        document.getElementById('score').innerText = score;
+        
+        function drawPlayer() {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(player.x, player.y, 100, 100);
+            ctx.beginPath();
+            ctx.moveTo(player.x + 50, player.y);
+            ctx.lineTo(player.x + 50, player.y - 20);
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = 'white';
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(player.x + 50, player.y + 100);
+            ctx.lineTo(player.x + 50, player.y + 120);
+            ctx.lineWidth = 5;
+            ctx.strokeStyle = 'white';
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(player.x + 50, player.y + 50, 50, 0, 2 * Math.PI);
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'gray';
+            ctx.stroke();
+            ctx.fillStyle = 'gray';
+            ctx.fill();
+            // Draw jet
+            ctx.fillStyle = 'white';
+            ctx.fillRect(player.x + 45, player.y + 100, 10, 20);
+        }
+        
+        function drawEnemies() {
+            enemies.forEach((enemy, index) => {
+                ctx.fillStyle = '#ff0000'; /* Changed to red */
+                ctx.fillRect(enemy.x, enemy.y, 70, 70);
+                
+                // Draw angry eyes
+                if (enemy.type === 'angry') {
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(enemy.x + 10, enemy.y + 10, 10, 10);
+                    ctx.fillRect(enemy.x + 50, enemy.y + 10, 10, 10);
+                    // Draw angry mouth
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(enemy.x + 20, enemy.y + 50, 30, 10);
+                } else if (enemy.type === 'angrier') {
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(enemy.x + 15, enemy.y + 15, 15, 15);
+                    ctx.fillRect(enemy.x + 40, enemy.y + 15, 15, 15);
+                    // Draw angrier mouth
+                    ctx.fillStyle = 'black';
+                    ctx.fillRect(enemy.x + 25, enemy.y + 55, 20, 15);
+                }
+                enemy.y += 2;
+                
+                if (enemy.y > canvas.height) {
+                    lives--;
+                    updateLives();
+                    enemies.splice(index, 1);
+                    if (lives === 0) {
+                        alert('Game Over');
+                        location.reload();
+                    }
+                }
+                // Check if enemy crosses over player
+                if (checkCollision(enemy, player)) {
+                    lives--;
+                    updateLives();
+                    enemies.splice(index, 1);
+                    if (lives === 0) {
+                        alert('Game Over');
+                        location.reload();
+                    }
+                }
+            });
+        }
+        
+        function drawBullets() {
+            bullets.forEach((bullet, index) => {
+                ctx.fillStyle = '#ffffcc';
+                ctx.fillRect(bullet.x, bullet.y, 10, 20);
+                bullet.y -= 10;
+                
+                if (bullet.y < 0) {
+                    bullets.splice(index, 1);
+                }
+            });
+        }
+        
+        function drawBoss() {
+            if (boss) {
+                ctx.fillStyle = '#ff0000'; /* Changed to red */
+                ctx.fillRect(boss.x, boss.y, 150, 150);
+                ctx.beginPath();
+                ctx.moveTo(boss.x + 75, boss.y);
+                ctx.lineTo(boss.x + 75, boss.y - 20);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = '#ff0000'; /* Changed to red */
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.moveTo(boss.x + 75, boss.y + 150);
+                ctx.lineTo(boss.x + 75, boss.y + 170);
+                ctx.lineWidth = 5;
+                ctx.strokeStyle = '#ff0000'; /* Changed to red */
+                ctx.stroke();
+                ctx.fillStyle = 'white';
+                ctx.font = '24px Arial';
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'top';
+                ctx.fillText(`Health: ${boss.health}`, boss.x, boss.y - 30);
+                // Draw boss eyes
+                ctx.fillStyle = 'white';
+                ctx.fillRect(boss.x + 30, boss.y + 30, 30, 30);
+                ctx.fillRect(boss.x + 90, boss.y + 30, 30, 30);
+                // Draw boss mouth
+                ctx.fillStyle = 'white';
+                ctx.fillRect(boss.x + 45, boss.y + 80, 60, 20);
+                boss.y += 2;
+                if (boss.y > canvas.height) {
+                    lives--;
+                    updateLives();
+                    boss = null;
+                    if (lives === 0) {
+                        alert('Game Over');
+                        location.reload();
+                    }
+                }
+                // Check if boss crosses over player
+                if (checkCollisionBoss(boss, player)) {
+                    lives--;
+                    updateLives();
+                    boss = null;
+                    if (lives === 0) {
+                        alert('Game Over');
+                        location.reload();
+                    }
+                }
+            }
+        }
+        
+        function checkCollisions() {
+            bullets.forEach((bullet, bulletIndex) => {
+                enemies.forEach((enemy, enemyIndex) => {
+                    if (checkCollision(bullet, enemy)) {
+                        score++;
+                        document.getElementById('score').innerText = score;
+                        enemies.splice(enemyIndex, 1);
+                        bullets.splice(bulletIndex, 1);
+                    }
+                });
+                if (boss) {
+                    if (checkCollisionBoss(bullet, boss)) {
+                        boss.health--;
+                        bullets.splice(bulletIndex, 1);
+                        if (boss.health === 0) {
+                            score += 5;
+                            document.getElementById('score').innerText = score;
+                            boss = null;
+                        }
+                    }
+                }
+            });
+        }
+        
+        function checkCollision(obj1, obj2) {
+            return obj1.x + 50 > obj2.x && obj1.x < obj2.x + 100 && obj1.y + 50 > obj2.y && obj1.y < obj2.y + 100;
+        }
+        
+        function checkCollisionBoss(obj1, obj2) {
+            return obj1.x + 75 > obj2.x && obj1.x < obj2.x + 100 && obj1.y + 75 > obj2.y && obj1.y < obj2.y + 100;
+        }
+        
+        function update() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawPlayer();
+            drawEnemies();
+            drawBullets();
+            drawBoss();
+            checkCollisions();
+            
+            if (Math.random() < 0.01) {
+                if (enemies.length < 5) {
+                    let enemyType = Math.random() < 0.5 ? 'angry' : 'angrier';
+                    enemies.push({ x: Math.random() * (canvas.width - 70), y: -100, type: enemyType });
+                }
+            }
+            
+            if (score >= 30 && !boss) {
+                boss = { x: canvas.width / 2 - 75, y: -150, health: 10 };
+            }
+            
+            if (moveLeft) {
+                player.x -= 15;
+                if (player.x < 0) {
+                    player.x = 0;
+                }
+            }
+            if (moveRight) {
+                player.x += 15;
+                if (player.x > canvas.width - 100) {
+                    player.x = canvas.width - 100;
+                }
+            }
+            if (shoot) {
+                bullets.push({ x: player.x + 45, y: player.y });
+                shoot = false;
+            }
+            
+            requestAnimationFrame(update);
+        }
+        
+        function updateLives() {
+            let livesDiv = document.getElementById('lives');
+            livesDiv.innerHTML = '';
+            for (let i = 0; i < lives; i++) {
+                let heart = document.createElement('div');
+                heart.classList.add('heart');
+                livesDiv.appendChild(heart);
+            }
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                moveLeft = true;
+            }
+            if (e.key === 'ArrowRight') {
+                moveRight = true;
+            }
+            if (e.key === ' ') {
+                shoot = true;
+            }
+            if (e.key === 'ArrowUp') {
+                shoot = true;
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft') {
+                moveLeft = false;
+            }
+            if (e.key === 'ArrowRight') {
+                moveRight = false;
+            }
+        });
+        
+        document.getElementById('start-button').addEventListener('click', () => {
+            update();
+            document.getElementById('start-button').style.display = 'none';
+        });
+        
+        // Add stars to the background
+        for (let i = 0; i < 200; i++) {
+            let star = document.createElement('div');
+            star.classList.add('star');
+            star.style.top = `${Math.random() * window.innerHeight}px`;
+            star.style.left = `${Math.random() * window.innerWidth}px`;
+            document.body.appendChild(star);
+        }
+    </script>
+</body>
+</html>

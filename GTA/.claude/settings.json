@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/tomer/.claude/plugins/cache/claude-plugins-official/superpowers/5.0.5/skills/writing-plans/**)",
+      "Read(//c/Program Files/Unity/Hub/Editor/**)",
+      "Read(//c/Program Files/Unity Hub/**)",
+      "Read(//c/Users/tomer/OneDrive/שולחן העבודה/**)",
+      "Read(//c/Users/tomer/**)",
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); [print\\(p.get\\(''''path'''',''''''''\\)\\) for p in data.get\\(''''projects'''',[]\\)]\")",
+      "Bash(ls \"c:\\\\Users\\\\tomer\\\\OneDrive\\\\שולחן העבודה\\\\GTA\\\\GTA\\\\Assets\\\\Editor\"\" 2>/dev/null || echo \"not found \")",
+      "Bash(grep -v \"//\")",
+      "Bash(find 'c:/Users/tomer/OneDrive/שולחן העבודה/GTA/.worktrees/phase1-mvp/GTA/Assets/Scripts/UI' -type f -name *.cs)",
+      "Bash(find 'c:/Users/tomer/OneDrive/שולחן העבודה/GTA' -name *.cs -path */Assets/Scripts/*)",
+      "Bash(find 'c:/Users/tomer/OneDrive/שולחן העבודה/GTA/.worktrees/phase1-mvp/GTA' -name *.asmdef)",
+      "Bash(grep -iE \"\\\\.\\(png|jpg|jpeg|gif|bmp|tga|webp\\)$\")",
+      "Bash(python -c \"from PIL import Image; print\\(''''PIL available''''\\)\")",
+      "Bash(python3 -c \"from PIL import Image; print\\(''''PIL available''''\\)\")",
+      "Bash(magick --version)",
+      "Bash(ffmpeg -version)",
+      "Bash(python -c 'import PIL')",
+      "Bash(python3 -c 'import PIL')",
+      "Bash(where magick:*)",
+      "Bash(where ffmpeg:*)",
+      "Bash(where convert:*)",
+      "Bash(pip3 show:*)",
+      "Bash(python -m PIL --version)",
+      "Bash(python -c \"from PIL import Image; img = Image.open\\(''c:/Users/tomer/OneDrive/שולחן העבודה/GTA/shotgun.webp''\\); img.save\\(''c:/Users/tomer/OneDrive/שולחן העבודה/GTA/.worktrees/phase1-mvp/GTA/Assets/UI/WeaponIcons/shotgun.png'', ''PNG''\\); img2 = Image.open\\(''c:/Users/tomer/OneDrive/שולחן העבודה/GTA/rpg.webp''\\); img2.save\\(''c:/Users/tomer/OneDrive/שולחן העבודה/GTA/.worktrees/phase1-mvp/GTA/Assets/UI/WeaponIcons/rpg.png'', ''PNG''\\); print\\(''Converted''\\)\")",
+      "Bash(where python.exe)",
+      "Bash(where python3.exe)",
+      "Bash(ls /c/Users/tomer/anaconda3/bin/python*)",
+      "Bash(ls /c/Users/tomer/AppData/Local/Programs/Python/*/python.exe)",
+      "Bash(/c/Users/tomer/anaconda3/python.exe -c \"from PIL import Image; img = Image.open\\(r''c:\\\\Users\\\\tomer\\\\OneDrive\\\\שולחן העבודה\\\\GTA\\\\shotgun.webp''\\); img.save\\(r''c:\\\\Users\\\\tomer\\\\OneDrive\\\\שולחן העבודה\\\\GTA\\\\.worktrees\\\\phase1-mvp\\\\GTA\\\\Assets\\\\UI\\\\WeaponIcons\\\\shotgun.png''\\); img2 = Image.open\\(r''c:\\\\Users\\\\tomer\\\\OneDrive\\\\שולחן העבודה\\\\GTA\\\\rpg.webp''\\); img2.save\\(r''c:\\\\Users\\\\tomer\\\\OneDrive\\\\שולחן העבודה\\\\GTA\\\\.worktrees\\\\phase1-mvp\\\\GTA\\\\Assets\\\\UI\\\\WeaponIcons\\\\rpg.png''\\); print\\(''Done''\\)\")",
+      "Bash(/c/Users/tomer/anaconda3/python.exe -c \":*)"
+    ]
+  }
+}

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gumble Game</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #2f2f2f;
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="h-screen flex justify-center items-center flex-col">
+    <h1 class="text-3xl mb-4">Gumble Game</h1>
+    <div class="bg-gray-800 p-4 rounded mb-4">
+        <h2 class="text-xl mb-2">Game Rules:</h2>
+        <ul class="list-disc pl-4 text-lg">
+            <li>You start with $100.</li>
+            <li>Every spin costs $5.</li>
+            <li>If you win, you get $50.</li>
+            <li>The chance of winning is 25%.</li>
+            <li>If 2 of the colors are the same, you get $2 back.</li>
+        </ul>
+    </div>
+    <div class="flex justify-center mb-4">
+        <button id="spin-button" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Spin ($5)</button>
+    </div>
+    <div class="flex justify-center mb-4">
+        <p id="balance" class="text-xl">Balance: $100</p>
+    </div>
+    <div class="flex justify-center mb-4">
+        <div id="result" class="text-xl flex justify-center">
+            <div class="w-16 h-16 bg-red-500 mr-4 rounded-full shadow-md"></div>
+            <div class="w-16 h-16 bg-red-500 mr-4 rounded-full shadow-md"></div>
+            <div class="w-16 h-16 bg-red-500 rounded-full shadow-md"></div>
+        </div>
+    </div>
+    <div class="flex justify-center mb-4">
+        <p id="win-streak" class="text-xl">Win Streak: 0</p>
+    </div>
+    <div class="flex justify-center mb-4">
+        <p id="result-text" class="text-xl"></p>
+    </div>
+
+    <script>
+        let balance = 100;
+        let winStreak = 0;
+        const spinButton = document.getElementById('spin-button');
+        const balanceElement = document.getElementById('balance');
+        const resultElement = document.getElementById('result');
+        const winStreakElement = document.getElementById('win-streak');
+        const resultText = document.getElementById('result-text');
+
+        spinButton.addEventListener('click', () => {
+            if (balance >= 5) {
+                balance -= 5;
+                balanceElement.textContent = `Balance: $${balance}`;
+                const colors = ['red', 'green', 'blue'];
+                const colorMap = {
+                    'red': 'bg-red-500',
+                    'green': 'bg-green-500',
+                    'blue': 'bg-blue-500'
+                };
+                const result = [];
+                for (let i = 0; i < 3; i++) {
+                    result.push(colors[Math.floor(Math.random() * colors.length)]);
+                }
+                resultElement.innerHTML = '';
+                for (let i = 0; i < result.length; i++) {
+                    const color = document.createElement('div');
+                    color.className = `w-16 h-16 ${colorMap[result[i]]} ${i === result.length - 1 ? '' : 'mr-4'} rounded-full shadow-md`;
+                    resultElement.appendChild(color);
+                }
+                const winningColor = result[0];
+                let wins = 0;
+                for (let i = 0; i < result.length; i++) {
+                    if (result[i] === winningColor) {
+                        wins++;
+                    }
+                }
+                if (wins === 3) {
+                    balance += 50;
+                    winStreak++;
+                    winStreakElement.textContent = `Win Streak: ${winStreak}`;
+                    resultText.textContent = 'Congratulations, you won!';
+                    if (winStreak === 3) {
+                        alert('Congratulations, you won 3 times in a row!');
+                        winStreak = 0;
+                        winStreakElement.textContent = `Win Streak: ${winStreak}`;
+                    }
+                } else if (wins === 2) {
+                    balance += 2;
+                    resultText.textContent = 'You got two of the same color!';
+                } else {
+                    winStreak = 0;
+                    winStreakElement.textContent = `Win Streak: ${winStreak}`;
+                    resultText.textContent = 'Better luck next time!';
+                }
+                balanceElement.textContent = `Balance: $${balance}`;
+            } else {
+                alert('You do not have enough balance to spin.');
+            }
+        });
+    </script>
+</body>
+</html>
